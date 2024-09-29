@@ -514,3 +514,5 @@ const wordSet = {
   Zephyr: "A soft gentle breeze.",
   Zest: "Great enthusiasm and energy.",
 };
+
+export default wordSet;

@@ -1,42 +1,170 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  background-color: #f7f7f7;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.page-title {
+  color: #8e8e8e;
   text-align: center;
+  font-size: 2rem;
+  margin: 20px 0;
+  text-shadow: 10px 10px 15px #b8d0ff;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.app-logo {
+  max-width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center alignment for better responsiveness */
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.app-logo img {
+  width: 100%;
+  max-width: 400px; /* Maintain max width */
+  margin-bottom: 1vh;
+  margin-top: 1vh;
+}
+
+.card-container {
+  display: flex;
+  flex-direction: column; /* Change to column for better responsiveness */
+  justify-content: center;
+  align-items: center;
+  width: 90%; /* Use percentage for responsiveness */
+  max-width: 500px; /* Set a maximum width */
+  box-shadow: 10px 10px 15px #b8d0ff;
+  border-radius: 20px;
+  margin: 20px;
+}
+
+.card-header {
+  padding: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  background-color: #b8d0ff;
+  text-align: center;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.card-text h1,
+.card-text p {
+  color: #8e8e8e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  white-space: normal;
+  width: 100%;
+}
+
+.next-word-btn,
+.attempt-btn {
+  margin-top: 0.5rem;
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s, transform 0.2s;
+  width: 100%; /* Make buttons full width on smaller screens */
+  max-width: 200px; /* Optional: limit the maximum width */
+}
+
+.next-word-btn {
+  background-color: #f9cb5d;
+}
+
+.next-word-btn:hover {
+  background-color: #c59d3d;
+}
+
+.next-word-btn:active {
+  transform: scale(0.98);
+}
+
+.attempt-btn {
+  background-color: #c476b9;
+}
+
+.attempt-btn:hover {
+  background-color: #b05c9d;
+}
+
+.attempt-btn:active {
+  transform: scale(0.98);
+}
+
+.mb-3 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-input {
+  margin: 0.5rem;
+  font-size: 1.5rem;
+  border-radius: 5px;
+  width: 100%; /* Make input fields full width */
+  max-width: 400px; /* Optional: limit maximum width */
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 1.5rem; /* Smaller font size for smaller screens */
   }
-  to {
-    transform: rotate(360deg);
+
+  .card-container {
+    width: 95%; /* Slightly wider for smaller screens */
+  }
+
+  .next-word-btn,
+  .attempt-btn {
+    padding: 8px 16px; /* Smaller padding */
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+@media (max-width: 480px) {
+  .page-title {
+    font-size: 1.2rem; /* Even smaller font size */
   }
-}
 
-.card {
-  padding: 2em;
-}
+  .card-header {
+    font-size: 1.25rem; /* Smaller header font size */
+  }
 
-.read-the-docs {
-  color: #888;
+  .form-input {
+    font-size: 1.2rem; /* Smaller input font size */
+  }
 }

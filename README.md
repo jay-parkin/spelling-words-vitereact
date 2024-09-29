@@ -30,7 +30,7 @@
 
 - `localhost:3000/maths`
 
-  - Math questions
+  - Maths questions
 
 - `localhost:3000/maths/results`
 

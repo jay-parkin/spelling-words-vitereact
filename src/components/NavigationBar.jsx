@@ -16,15 +16,21 @@ const NavigationBar = () => {
         <div></div>
         <div></div>
       </div>
+
+      <div className="nav-left">
+        <ul className={`navbar-links ${isOpen ? "show" : ""}`}>
+          <li>
+            <NavLink
+              to="/"
+              className={({ isActive }) => (isActive ? "active" : "inactive")}
+            >
+              Home
+            </NavLink>
+          </li>
+        </ul>
+      </div>
+
       <ul className={`navbar-links ${isOpen ? "show" : ""}`}>
-        <li>
-          <NavLink
-            to="/"
-            className={({ isActive }) => (isActive ? "active" : "inactive")}
-          >
-            Home
-          </NavLink>
-        </li>
         <li>
           <NavLink
             to="/spelling"
@@ -58,16 +64,28 @@ const NavigationBar = () => {
           </NavLink>
         </li>
       </ul>
-      <ul className={`navbar-links ${isOpen ? "show" : ""}`}>
-        <li>
+
+      <div className="nav-right">
+        <ul className="navbar-profile" style={{ listStyleType: "none" }}>
+          <li>
+            <NavLink
+              to="/profile"
+              className={({ isActive }) => (isActive ? "active" : "inactive")}
+            >
+              Profile
+            </NavLink>
+          </li>
+        </ul>
+
+        <li className={`navbar-links ${isOpen ? "show" : ""}`}>
           <NavLink
-            to="/profile"
+            to="/settings"
             className={({ isActive }) => (isActive ? "active" : "inactive")}
           >
-            Profile
+            Settings
           </NavLink>
         </li>
-      </ul>
+      </div>
     </nav>
   );
 };

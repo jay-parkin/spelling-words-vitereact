@@ -7,6 +7,7 @@ import SentencesPage from "./pages/SentencesPage";
 import WordSearchPage from "./pages/WordSearchPage";
 import NavigationBar from "./components/NavigationBar";
 import ProfilePage from "./pages/ProfilePage";
+import SettingsPage from "./pages/SettingsPage";
 
 const journalRouter = createBrowserRouter([
   {
@@ -60,6 +61,15 @@ const journalRouter = createBrowserRouter([
       <>
         <NavigationBar />
         <ProfilePage />
+      </>
+    ),
+  },
+  {
+    path: "/settings",
+    element: (
+      <>
+        <NavigationBar />
+        <SettingsPage />
       </>
     ),
   },

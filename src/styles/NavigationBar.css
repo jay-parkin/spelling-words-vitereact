@@ -11,13 +11,6 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.navbar-logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: white;
-  text-decoration: none;
-}
-
 .navbar-links {
   list-style-type: none;
   margin: 0;
@@ -26,7 +19,24 @@
   gap: 30px;
 }
 
-.navbar-links a {
+.nav-left,
+.nav-right {
+  gap: 30px;
+  display: flex;
+  align-items: center;
+}
+
+.nav-left {
+  margin-right: auto;
+}
+
+.nav-right {
+  margin-left: auto;
+}
+
+.navbar-links a,
+.nav-left a,
+.nav-right a {
   color: white;
   text-decoration: none;
   font-size: 1rem;
@@ -34,11 +44,15 @@
   transition: color 0.3s ease;
 }
 
-.navbar-links a:hover {
+.navbar-links a:hover,
+.nav-left a:hover,
+.nav-right a:hover {
   color: #ffcc00;
 }
 
-.navbar-links a.active {
+.navbar-links a.active,
+.nav-left a:active,
+.nav-right a:active {
   border-bottom: 3px solid #ffcc00;
 }
 

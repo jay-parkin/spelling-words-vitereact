@@ -5,7 +5,7 @@ import SpellingPage from "./pages/SpellingPage";
 import MathsPage from "./pages/MathsPage";
 import SentencesPage from "./pages/SentencesPage";
 import WordSearchPage from "./pages/WordSearchPage";
-import NavigationBar from "./components/NavigationBar";
+import Navbar from "./components/Navbar";
 import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
 
@@ -14,7 +14,7 @@ const journalRouter = createBrowserRouter([
     path: "/",
     element: (
       <>
-        <NavigationBar />
+        <Navbar />
         <HomePage />
       </>
     ),
@@ -23,7 +23,7 @@ const journalRouter = createBrowserRouter([
     path: "/spelling",
     element: (
       <>
-        <NavigationBar />
+        <Navbar />
         <SpellingPage />
       </>
     ),
@@ -32,7 +32,7 @@ const journalRouter = createBrowserRouter([
     path: "/maths",
     element: (
       <>
-        <NavigationBar />
+        <Navbar />
         <MathsPage />
       </>
     ),
@@ -41,7 +41,7 @@ const journalRouter = createBrowserRouter([
     path: "/sentences",
     element: (
       <>
-        <NavigationBar />
+        <Navbar />
         <SentencesPage />
       </>
     ),
@@ -50,7 +50,7 @@ const journalRouter = createBrowserRouter([
     path: "/word-search",
     element: (
       <>
-        <NavigationBar />
+        <Navbar />
         <WordSearchPage />
       </>
     ),
@@ -59,7 +59,7 @@ const journalRouter = createBrowserRouter([
     path: "/profile",
     element: (
       <>
-        <NavigationBar />
+        <Navbar />
         <ProfilePage />
       </>
     ),
@@ -68,7 +68,7 @@ const journalRouter = createBrowserRouter([
     path: "/settings",
     element: (
       <>
-        <NavigationBar />
+        <Navbar />
         <SettingsPage />
       </>
     ),

@@ -58,6 +58,16 @@ const NavigationBar = () => {
           </NavLink>
         </li>
       </ul>
+      <ul className={`navbar-links ${isOpen ? "show" : ""}`}>
+        <li>
+          <NavLink
+            to="/profile"
+            className={({ isActive }) => (isActive ? "active" : "inactive")}
+          >
+            Profile
+          </NavLink>
+        </li>
+      </ul>
     </nav>
   );
 };

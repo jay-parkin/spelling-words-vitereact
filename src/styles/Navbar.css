@@ -114,7 +114,7 @@
     width: 25px; /* Increase width if needed */
     height: 3px; /* Increase height to make lines thicker */
     background-color: white;
-    margin: 2px 0; /* Adjust spacing between lines */
+    margin: 3px 0; /* Adjust spacing between lines */
     transition: 0.4s;
   }
 

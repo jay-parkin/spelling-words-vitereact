@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import WordCard from "./WordCard";
-import Results from "./SpellingResults"; // Import the new Results component
+import Results from "./SpellingResults";
 import wordSet from "../data/WordsList";
 
 const TOTAL_WORDS = 10;

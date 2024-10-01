@@ -1,0 +1,92 @@
+.maths-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.maths-card-container {
+  width: 400px;
+  max-width: 400px;
+  box-shadow: 10px 10px 15px #b8d0ff;
+  border-radius: 20px;
+  margin: 20px;
+}
+
+.maths-card-header {
+  padding: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  background-color: #b8d0ff;
+  text-align: center;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.maths-card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  padding: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.maths-card-text h1,
+.maths-card-text p {
+  margin: 0.5rem;
+  color: #8e8e8e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  white-space: normal;
+  width: 100%;
+}
+
+.maths-submit-btn {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s, transform 0.2s;
+  width: 70%;
+  max-width: 200px;
+}
+
+.maths-submit-btn {
+  background-color: #f9cb5d;
+}
+
+.maths-submit-btn:hover {
+  background-color: #c59d3d;
+}
+
+.maths-submit-btn:active {
+  transform: scale(0.98);
+}
+
+.maths-input-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.maths-form-input {
+  padding: 0.5rem;
+  margin: 0.5rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  width: 100%;
+}

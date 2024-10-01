@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
-import InputGroup from "react-bootstrap/InputGroup";
 import { BiBook } from "react-icons/bi";
 import { BiChevronLeft } from "react-icons/bi";
+
+import "../styles/SpellingPage.css";
 
 /**
  * header
@@ -83,61 +83,56 @@ export default function WordCard(props) {
   };
 
   return (
-    <div className="card-body">
-      <div className="card-container">
-        <Card bg="light" border="primary" style={{ width: "100%" }}>
-          <Card.Title className="card-header">
-            <BiBook size={40} color="white" />
-            <BiChevronLeft size={20} color="white" />
-          </Card.Title>
-          <Card.Body>
-            <div className="card-text">
-              <h1>{attempted ? maskText(word) : word}</h1>
-              {/* Spelling word to attempt */}
-              {/* Mask or show word */}
-              <p>{attempted ? maskText(definition) : definition}</p>
-              {/* Mask or show definition */}
-            </div>
-            <InputGroup className="mb-3">
-              <Button
-                className="attempt-btn"
-                variant="outline-secondary"
-                id="button-addon1"
-                onClick={handleAttemptClick}
-                onKeyDown={handleKeyDown} // Handle key down events
-              >
-                attempt
-              </Button>
-              <Form.Control
-                className="form-input"
-                type="text" // Use type "text" to try and influence behavior
-                aria-label="Example text with button addon"
-                aria-describedby="basic-addon1"
-                disabled={inputDisabled} // Bind disabled state to the input field
-                value={inputValue} // Bind value to the input field
-                onChange={handleInputChange} // Handle input changes
-                onKeyDown={handleKeyDown} // Handle key down events
-                ref={inputRef} // Attach the ref to the input field
-                autoComplete="off"
-                autoCorrect="off" // Disable auto-correct
-                autoCapitalize="none" // Disable auto-capitalization
-                spellCheck="false" // Disable spell check
-                // inputMode="none" // Suggests no input mode for the field TURNS OFF KEYBOARD
-                pattern=".*" // Matches anything, effectively no restriction
-                placeholder="" // Adding a placeholder might also help
-              />
-            </InputGroup>
-
+    <div className="spelling-body">
+      <div className="spelling-card-container">
+        <div className="spelling-card-header">
+          <BiBook size={40} color="white" />
+          <BiChevronLeft size={20} color="white" />
+        </div>
+        <div className="spelling-card-body">
+          <div className="spelling-card-text">
+            <h1>{attempted ? maskText(word) : word}</h1>
+            {/* Spelling word to attempt */}
+            {/* Mask or show word */}
+            <p>{attempted ? maskText(definition) : definition}</p>
+            {/* Mask or show definition */}
+          </div>
+          <div className="spelling-input-group">
             <Button
-              className="next-word-btn"
-              variant="primary"
-              onClick={handleNextWordClick}
-              disabled={inputValue.trim() === ""}
+              className="spelling-attempt-btn"
+              variant="outline-secondary"
+              id="button-addon1"
+              onClick={handleAttemptClick}
+              onKeyDown={handleKeyDown} // Handle key down events
             >
-              Next Word
+              attempt
             </Button>
-          </Card.Body>
-        </Card>
+            <Form.Control
+              className="spelling-form-input"
+              disabled={inputDisabled} // Bind disabled state to the input field
+              value={inputValue} // Bind value to the input field
+              onChange={handleInputChange} // Handle input changes
+              onKeyDown={handleKeyDown} // Handle key down events
+              ref={inputRef} // Attach the ref to the input field
+              autoComplete="off"
+              autoCorrect="off" // Disable auto-correct
+              autoCapitalize="none" // Disable auto-capitalization
+              spellCheck="false" // Disable spell check
+              // inputMode="none" // Suggests no input mode for the field TURNS OFF KEYBOARD
+              pattern=".*" // Matches anything, effectively no restriction
+              placeholder="" // Adding a placeholder might also help
+            />
+          </div>
+
+          <Button
+            className="spelling-next-word-btn"
+            variant="primary"
+            onClick={handleNextWordClick}
+            disabled={inputValue.trim() === ""}
+          >
+            Next Word
+          </Button>
+        </div>
       </div>
     </div>
   );

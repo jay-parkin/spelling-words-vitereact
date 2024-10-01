@@ -1,40 +1,10 @@
-.page-title {
-  color: #8e8e8e;
-  text-align: center;
-  font-size: 2rem;
-  margin: 20px 0;
-  text-shadow: 10px 10px 15px #b8d0ff;
-}
-
-.logo-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.app-logo {
-  margin-left: 1rem;
-  max-width: 90%;
+.spelling-body {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.app-logo img {
-  width: 100%;
-  max-width: 400px;
-  margin-bottom: 1vh;
-  margin-top: 1vh;
-}
-
-.card-body {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.card-container {
+.spelling-card-container {
   width: 400px;
   max-width: 400px;
   box-shadow: 10px 10px 15px #b8d0ff;
@@ -42,7 +12,7 @@
   margin: 20px;
 }
 
-.card-header {
+.spelling-card-header {
   padding: 0.5rem;
   font-size: 1.5rem;
   font-weight: bold;
@@ -53,17 +23,19 @@
   border-top-right-radius: 20px;
 }
 
-.card-body {
+.spelling-card-body {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   overflow: hidden;
   padding: 1rem;
   width: 100%;
   box-sizing: border-box;
 }
 
-.card-text h1,
-.card-text p {
+.spelling-card-text h1,
+.spelling-card-text p {
   margin: 0.5rem;
   color: #8e8e8e;
   display: flex;
@@ -76,8 +48,8 @@
   width: 100%;
 }
 
-.next-word-btn,
-.attempt-btn {
+.spelling-next-word-btn,
+.spelling-attempt-btn {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
   display: inline-block;
@@ -94,37 +66,37 @@
   max-width: 200px;
 }
 
-.next-word-btn {
+.spelling-next-word-btn {
   background-color: #f9cb5d;
 }
 
-.next-word-btn:hover {
+.spelling-next-word-btn:hover {
   background-color: #c59d3d;
 }
 
-.next-word-btn:active {
+.spelling-next-word-btn:active {
   transform: scale(0.98);
 }
 
-.attempt-btn {
+.spelling-attempt-btn {
   background-color: #c476b9;
 }
 
-.attempt-btn:hover {
+.spelling-attempt-btn:hover {
   background-color: #b05c9d;
 }
 
-.attempt-btn:active {
+.spelling-attempt-btn:active {
   transform: scale(0.98);
 }
 
-.mb-3 {
+.spelling-input-group {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.form-input {
+.spelling-form-input {
   padding: 0.5rem;
   margin: 0.5rem;
   font-size: 1rem;
@@ -134,20 +106,20 @@
 
 /* Media Queries for Responsive Design */
 @media (max-width: 768px) {
-  .page-title {
+  .spelling-page-title {
     font-size: 1.5rem;
   }
 
-  .card-container {
+  .spelling-card-container {
     width: 95%;
   }
 
-  .next-word-btn,
-  .attempt-btn {
+  .spelling-next-word-btn,
+  .spelling-attempt-btn {
     padding: 8px 16px;
   }
 
-  .logo-container {
+  .spelling-logo-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -155,15 +127,15 @@
 }
 
 @media (max-width: 480px) {
-  .page-title {
+  .spelling-page-title {
     font-size: 1.2rem;
   }
 
-  .card-header {
+  .spelling-ard-header {
     font-size: 1.25rem;
   }
 
-  .form-input {
+  .spelling-form-input {
     font-size: 1.2rem;
   }
 }

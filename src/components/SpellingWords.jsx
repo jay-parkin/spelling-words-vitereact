@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import WordCard from "./WordCard";
 import Results from "./SpellingResults";
 import wordSet from "../data/WordsList";
+import randomColourProperty from "../functions/RandomColourProperty";
 
 const TOTAL_WORDS = 10;
 
@@ -79,7 +80,7 @@ export default function SpellingWords() {
   }
 
   return (
-    <section>
+    <section className="spelling-body">
       {/* Display the current word */}
       {randomWords.length > 0 && currentWordIndex < randomWords.length ? (
         <WordCard
@@ -87,6 +88,7 @@ export default function SpellingWords() {
           definition={randomWords[currentWordIndex].definition}
           onNextWord={handleNextWord}
           onAttempt={handleAttempt}
+          designColour={randomColourProperty}
         />
       ) : (
         <p>All words completed!</p>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import MathsCard from "./MathsCard"; // Ensure this matches the exported name
+import randomColourProperty from "../functions/RandomColourProperty";
 
 const TOTAL_EQUATIONS = 20;
 const QUESTIONS_PER_PAGE = 6;
@@ -91,10 +92,11 @@ export default function MathsQuestions() {
         <>
           {displayedQuestions.map((question) => (
             <MathsCard
-              key={question.id} // Use the unique id as the key
+              key={question.id}
               equation={question.equation}
               answer={question.answer}
-              onDelete={() => deleteQuestion(question.id)} // Pass the delete method
+              onDelete={() => deleteQuestion(question.id)}
+              designColour={randomColourProperty()}
             />
           ))}
         </>

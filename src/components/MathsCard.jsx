@@ -6,10 +6,11 @@ import Button from "react-bootstrap/Button";
 import "../styles/MathsPage.css";
 
 export default function MathsCard(props) {
-  const { equation, answer, onDelete } = props;
+  const { equation, answer, onDelete, designColour } = props;
   // Local state to manage input field disabled state
   const [inputValue, setInputValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const [localColourProperty] = useState(designColour);
 
   // Function to handle input changes
   const handleInputChange = (e) => {
@@ -35,20 +36,20 @@ export default function MathsCard(props) {
     }
   };
 
-  const headerColours = {
-    yellow: "#f8df81",
-    salmon: "#f6aa90",
-    pink: "#f6b4bf",
-    purple: "#d5b6d5",
-    blue: "#badfda",
-    green: "#9bd0b7",
-  };
-
   return (
-    <div className="maths-card-container">
+    <div
+      className="maths-card-container"
+      style={{
+        boxShadow: `5px 5px 5px ${localColourProperty}`,
+        borderBottom: `1px solid ${localColourProperty}`,
+        borderLeft: `1px solid ${localColourProperty}`,
+      }}
+    >
       <div
         className="maths-card-header"
-        style={{ backgroundColor: headerColours.green }}
+        style={{
+          backgroundColor: localColourProperty,
+        }}
       >
         <TbMathSymbols size={40} color="white" />
       </div>

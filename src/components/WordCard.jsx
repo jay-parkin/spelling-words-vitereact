@@ -18,12 +18,13 @@ import "../styles/SpellingPage.css";
  */
 
 export default function WordCard(props) {
-  const { word, definition, onNextWord, onAttempt } = props;
+  const { word, definition, onNextWord, onAttempt, designColour } = props;
 
   // Local state to manage input field disabled state
   const [inputValue, setInputValue] = useState("");
   const [inputDisabled, setInputDisabled] = useState(true);
   const [attempted, setAttempted] = useState(false); // New state for tracking if attempted
+  const [localColourProperty] = useState(designColour);
 
   // Create a ref to the input field
   const inputRef = useRef(null);
@@ -83,56 +84,66 @@ export default function WordCard(props) {
   };
 
   return (
-    <div className="spelling-body">
-      <div className="spelling-card-container">
-        <div className="spelling-card-header">
-          <BiBook size={40} color="white" />
-          <BiChevronLeft size={20} color="white" />
+    <div
+      className="spelling-card-container"
+      style={{
+        boxShadow: `5px 5px 5px ${localColourProperty}`,
+        borderBottom: `1px solid ${localColourProperty}`,
+        borderLeft: `1px solid ${localColourProperty}`,
+      }}
+    >
+      <div
+        className="spelling-card-header"
+        style={{
+          backgroundColor: localColourProperty,
+        }}
+      >
+        <BiBook size={40} color="white" />
+        <BiChevronLeft size={20} color="white" />
+      </div>
+      <div className="spelling-card-body">
+        <div className="spelling-card-text">
+          <h1>{attempted ? maskText(word) : word}</h1>
+          {/* Spelling word to attempt */}
+          {/* Mask or show word */}
+          <p>{attempted ? maskText(definition) : definition}</p>
+          {/* Mask or show definition */}
         </div>
-        <div className="spelling-card-body">
-          <div className="spelling-card-text">
-            <h1>{attempted ? maskText(word) : word}</h1>
-            {/* Spelling word to attempt */}
-            {/* Mask or show word */}
-            <p>{attempted ? maskText(definition) : definition}</p>
-            {/* Mask or show definition */}
-          </div>
-          <div className="spelling-input-group">
-            <Button
-              className="spelling-attempt-btn"
-              variant="outline-secondary"
-              id="button-addon1"
-              onClick={handleAttemptClick}
-              onKeyDown={handleKeyDown} // Handle key down events
-            >
-              attempt
-            </Button>
-            <Form.Control
-              className="spelling-form-input"
-              disabled={inputDisabled} // Bind disabled state to the input field
-              value={inputValue} // Bind value to the input field
-              onChange={handleInputChange} // Handle input changes
-              onKeyDown={handleKeyDown} // Handle key down events
-              ref={inputRef} // Attach the ref to the input field
-              autoComplete="off"
-              autoCorrect="off" // Disable auto-correct
-              autoCapitalize="none" // Disable auto-capitalization
-              spellCheck="false" // Disable spell check
-              // inputMode="none" // Suggests no input mode for the field TURNS OFF KEYBOARD
-              pattern=".*" // Matches anything, effectively no restriction
-              placeholder="" // Adding a placeholder might also help
-            />
-          </div>
-
+        <div className="spelling-input-group">
           <Button
-            className="spelling-next-word-btn"
-            variant="primary"
-            onClick={handleNextWordClick}
-            disabled={inputValue.trim() === ""}
+            className="spelling-attempt-btn"
+            variant="outline-secondary"
+            id="button-addon1"
+            onClick={handleAttemptClick}
+            onKeyDown={handleKeyDown} // Handle key down events
           >
-            Next Word
+            attempt
           </Button>
+          <Form.Control
+            className="spelling-form-input"
+            disabled={inputDisabled} // Bind disabled state to the input field
+            value={inputValue} // Bind value to the input field
+            onChange={handleInputChange} // Handle input changes
+            onKeyDown={handleKeyDown} // Handle key down events
+            ref={inputRef} // Attach the ref to the input field
+            autoComplete="off"
+            autoCorrect="off" // Disable auto-correct
+            autoCapitalize="none" // Disable auto-capitalization
+            spellCheck="false" // Disable spell check
+            // inputMode="none" // Suggests no input mode for the field TURNS OFF KEYBOARD
+            pattern=".*" // Matches anything, effectively no restriction
+            placeholder="" // Adding a placeholder might also help
+          />
         </div>
+
+        <Button
+          className="spelling-next-word-btn"
+          variant="primary"
+          onClick={handleNextWordClick}
+          disabled={inputValue.trim() === ""}
+        >
+          Next Word
+        </Button>
       </div>
     </div>
   );

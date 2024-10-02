@@ -6,9 +6,10 @@ import Button from "react-bootstrap/Button";
 import "../styles/MathsPage.css";
 
 export default function MathsCard(props) {
-  const { equation, answer, onNextEquation } = props;
+  const { equation, answer, onDelete } = props;
   // Local state to manage input field disabled state
   const [inputValue, setInputValue] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
 
   // Function to handle input changes
   const handleInputChange = (e) => {
@@ -20,40 +21,49 @@ export default function MathsCard(props) {
     const isCorrect = parseInt(inputValue.trim()) === answer;
 
     if (isCorrect) {
-      onNextEquation();
+      onDelete();
     }
 
     setInputValue(""); // Clear the input field
   };
 
-  return (
-    <div className="maths-body">
-      <div className="maths-card-container">
-        <div className="maths-card-header">
-          <TbMathSymbols size={40} color="white" />
-        </div>
-        <div className="maths-card-body">
-          <div className="maths-card-text">
-            <h1>{equation ? equation : "5 x 5"}</h1>
-          </div>
-          <div className="maths-input-group">
-            <Form.Control
-              className="maths-form-input"
-              value={inputValue} // Bind value to the input field
-              onChange={handleInputChange} // Handle input changes
-              autoComplete="off"
-              autoCorrect="off" // Disable auto-correct
-              placeholder="" // Adding a placeholder might also help
-            />
+  // Function to handle key down events
+  const handleKeyDown = (e) => {
+    if (isFocused && e.key === "Enter") {
+      e.preventDefault(); // Prevent default behavior of the Enter key
+      handleNextEquation(); // Submit the answer
+    }
+  };
 
-            <Button
-              className="maths-submit-btn"
-              variant="primary"
-              onClick={handleNextEquation}
-            >
-              Submit
-            </Button>
-          </div>
+  return (
+    <div className="maths-card-container">
+      <div className="maths-card-header">
+        <TbMathSymbols size={40} color="white" />
+      </div>
+      <div className="maths-card-body">
+        <div className="maths-card-text">
+          <h1>{equation ? equation : "5 x 5"}</h1>
+        </div>
+        <div className="maths-input-group">
+          <Form.Control
+            className="maths-form-input"
+            value={inputValue} // Bind value to the input field
+            onChange={handleInputChange} // Handle input changes
+            onKeyDown={handleKeyDown} // Listen for key presses
+            onFocus={() => setIsFocused(true)} // Set focus state to true
+            onBlur={() => setIsFocused(false)} // Set focus state to false
+            autoComplete="off"
+            autoCorrect="off" // Disable auto-correct
+            placeholder="" // Adding a placeholder might also help
+          />
+
+          <Button
+            className="maths-submit-btn"
+            variant="primary"
+            onClick={handleNextEquation}
+          >
+            Submit
+          </Button>
         </div>
       </div>
     </div>

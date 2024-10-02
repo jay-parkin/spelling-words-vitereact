@@ -1,14 +1,19 @@
 import { useState, useEffect } from "react";
 import MathsCard from "./MathsCard"; // Ensure this matches the exported name
 
-const TOTAL_EQUATIONS = 10;
+const TOTAL_EQUATIONS = 30;
+const QUESTIONS_PER_PAGE = 6;
 
 export default function MathsQuestions() {
-  const [currentEquation, setCurrentEquation] = useState("");
-  const [currentAnswer, setCurrentAnswer] = useState(0);
+  // Array to hold all questions
+  const [questions, setQuestions] = useState([]);
+  const [displayedQuestions, setDisplayedQuestions] = useState([]);
+  const [finished, setFinished] = useState(false);
+
+  let idCounter = 0;
 
   // Function to generate random equations and answers
-  const generateRandomEquation = () => {
+  const generateRandomEquation = (id) => {
     const operators = ["+", "-", "*", "/"];
     const operator = operators[Math.floor(Math.random() * operators.length)];
     const num1 = Math.floor(Math.random() * 10) + 1;
@@ -16,7 +21,7 @@ export default function MathsQuestions() {
     let equation;
     let answer;
 
-    // Construct equation string and compute the answer
+    // Construct equation string and get the answer
     switch (operator) {
       case "+":
         equation = `${num1} + ${num2}`;
@@ -38,22 +43,62 @@ export default function MathsQuestions() {
         break;
     }
 
-    setCurrentEquation(equation);
-    setCurrentAnswer(answer);
+    // Return an object with the equation, answer, and unique id
+    return { id, equation, answer };
   };
 
-  // Run when the component first loads to generate the first equation
+  // Generate all questions with unique IDs
+  const generateAllQuestions = () => {
+    const newQuestions = Array.from({ length: TOTAL_EQUATIONS }, () =>
+      generateRandomEquation(idCounter++)
+    );
+
+    console.log("All questions generated:", newQuestions);
+    setQuestions(newQuestions);
+    setDisplayedQuestions(newQuestions.slice(0, QUESTIONS_PER_PAGE));
+  };
+
+  // Run when the component first loads to generate the questions
   useEffect(() => {
-    generateRandomEquation();
+    generateAllQuestions();
   }, []);
 
+  // Method to delete (remove) a question based on its ID
+  const deleteQuestion = (id) => {
+    // Remove the question from questions based on its id
+    const updatedQuestions = questions.filter((question) => question.id !== id);
+
+    setQuestions(updatedQuestions); // Update all questions
+
+    // If all questions are answered, mark as finished
+    if (updatedQuestions.length === 0) {
+      setFinished(true);
+    } else {
+      // Update the displayed questions based on the current questions
+      const newDisplayedQuestions = updatedQuestions.slice(
+        0,
+        QUESTIONS_PER_PAGE
+      );
+      setDisplayedQuestions(newDisplayedQuestions);
+    }
+  };
+
   return (
-    <section>
-      <MathsCard
-        equation={currentEquation}
-        answer={currentAnswer}
-        onNextEquation={generateRandomEquation}
-      />
+    <section className="maths-body">
+      {finished ? (
+        <h2>Congratulations! You've answered all questions!</h2>
+      ) : (
+        <>
+          {displayedQuestions.map((question) => (
+            <MathsCard
+              key={question.id} // Use the unique id as the key
+              equation={question.equation}
+              answer={question.answer}
+              onDelete={() => deleteQuestion(question.id)} // Pass the delete method
+            />
+          ))}
+        </>
+      )}
     </section>
   );
 }

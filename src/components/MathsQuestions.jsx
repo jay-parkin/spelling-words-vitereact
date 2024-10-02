@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import MathsCard from "./MathsCard"; // Ensure this matches the exported name
 
-const TOTAL_EQUATIONS = 30;
+const TOTAL_EQUATIONS = 20;
 const QUESTIONS_PER_PAGE = 6;
 
 export default function MathsQuestions() {

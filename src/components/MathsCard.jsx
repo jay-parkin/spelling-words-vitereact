@@ -35,9 +35,21 @@ export default function MathsCard(props) {
     }
   };
 
+  const headerColours = {
+    yellow: "#f8df81",
+    salmon: "#f6aa90",
+    pink: "#f6b4bf",
+    purple: "#d5b6d5",
+    blue: "#badfda",
+    green: "#9bd0b7",
+  };
+
   return (
     <div className="maths-card-container">
-      <div className="maths-card-header">
+      <div
+        className="maths-card-header"
+        style={{ backgroundColor: headerColours.green }}
+      >
         <TbMathSymbols size={40} color="white" />
       </div>
       <div className="maths-card-body">

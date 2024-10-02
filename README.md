@@ -9,7 +9,7 @@
   - root or Homepage
   - Welcome screen
   - Random funny quote
-  - Completion progress tiles for different sections
+  - Accordion tiles for different sections, showing progress
     - Spelling
     - Maths
     - Sentences
@@ -68,6 +68,11 @@
 
 - `localhost:3000/word-search`
   - Creates a word search out of this week's spelling words
+
+#### Personal Blog
+
+- `localhost:3000/personal-blog`
+  - Allows the user to make a quick blog on today and how they are feeling
 
 ## FrontEnd UI Frameworks
 

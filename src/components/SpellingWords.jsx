@@ -55,14 +55,6 @@ export default function SpellingWords() {
     ]);
   };
 
-  // Reset the state to start the app again
-  const handleRestart = () => {
-    const selectedWords = getRandomWords(wordSet);
-    setRandomWords(selectedWords);
-    setCurrentWordIndex(0);
-    setAttempts([]);
-  };
-
   // Calculate results
   const correctAttempts = attempts.filter(
     (attempt) => attempt.isCorrect
@@ -70,13 +62,7 @@ export default function SpellingWords() {
 
   // Render Results if all words are completed
   if (randomWords.length > 0 && currentWordIndex === randomWords.length - 1) {
-    return (
-      <Results
-        correctAttempts={correctAttempts}
-        attempts={attempts}
-        onRestart={handleRestart}
-      />
-    );
+    return <Results correctAttempts={correctAttempts} attempts={attempts} />;
   }
 
   return (

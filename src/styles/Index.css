@@ -54,3 +54,11 @@ body {
   margin-bottom: 1vh;
   margin-top: 1vh;
 }
+
+.spacer {
+  border-bottom: 1px solid #8e8e8e56;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

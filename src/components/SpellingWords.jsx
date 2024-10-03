@@ -67,11 +67,6 @@ export default function SpellingWords({ userId }) {
     ]);
   };
 
-  // Calculate results
-  // const correctAttempts = attempts.filter(
-  //   (attempt) => attempt.isCorrect
-  // ).length;
-
   // Render Results if all words are completed
   if (randomWords.length > 0 && currentWordIndex === randomWords.length - 1) {
     return (

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import WordCard from "./WordCard";
 import Results from "./SpellingResults";
+import SpellingSession from "./SpellingSession";
 import wordSet from "../data/WordsList";
 import randomColourProperty from "../functions/RandomColourProperty";
 
@@ -22,7 +23,18 @@ function getRandomWords(wordSet, count = TOTAL_WORDS) {
   }));
 }
 
-export default function SpellingWords() {
+export default function SpellingWords({ userId }) {
+  // Retrieve and parse the data from localStorage
+  const storedData = localStorage.getItem("spellingIsDone");
+  const spellingIsDone = storedData ? JSON.parse(storedData) : null;
+
+  // Access the status directly
+  const isStatusDone = spellingIsDone ? spellingIsDone.status : false;
+  console.log(isStatusDone);
+  if (spellingIsDone && spellingIsDone.status) {
+    return <p>All words completed!</p>;
+  }
+
   // Initialise state to hold the 10 random words
   const [randomWords, setRandomWords] = useState([]);
   // State to keep track of the current word index
@@ -56,13 +68,25 @@ export default function SpellingWords() {
   };
 
   // Calculate results
-  const correctAttempts = attempts.filter(
-    (attempt) => attempt.isCorrect
-  ).length;
+  // const correctAttempts = attempts.filter(
+  //   (attempt) => attempt.isCorrect
+  // ).length;
 
   // Render Results if all words are completed
   if (randomWords.length > 0 && currentWordIndex === randomWords.length - 1) {
-    return <Results correctAttempts={correctAttempts} attempts={attempts} />;
+    return (
+      <>
+        <Results
+          correctAttempts={attempts.filter((a) => a.isCorrect).length}
+          attempts={attempts}
+        />
+        <SpellingSession
+          userId={userId}
+          attempts={attempts}
+          setAttempts={setAttempts}
+        />
+      </>
+    );
   }
 
   return (

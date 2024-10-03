@@ -85,3 +85,69 @@
 - Netlify env variables: https://docs.netlify.com/environment-variables/overview/
 
 ## Useful Resources
+
+## Context
+
+- Weekly Word List
+
+```js
+{
+  id: "001",
+  date: "1727887154",
+  type: "spelling",
+  userid: "4b1fcc21-9598-49ac-a6ec-06ebfc08f7ad",
+  words: {
+  0, Adventure, "An exciting or unusual experience.",
+  1, Absent, "Not present in a place or a situation.",
+  2, Accident, "An unexpected and unintended event.",
+  3, Acoustic, "Related to sound or the sense of hearing.",
+  4, Address, "The details of the place where someone lives or works.",
+  5, Alphabet, "A set of letters used in a language.",
+  6, Amazing, "Causing great surprise or wonder.",
+  7, Animal, "A living organism that feeds on organic matter.",
+  8, Apartment, "A set of rooms forming a separate residence within a building.",
+  9, Apparent, "Clearly visible or understood; obvious.",
+  10, Apple, "A round fruit with red, green, or yellow skin.",
+  },
+  weeklycorrect: 5,
+  weeklyincorrect: 6,
+  weeklypercent: 0.454
+
+
+}
+```
+
+- Spelling Results
+  - Array of Objects
+
+```js
+{
+  "id": "002",
+  "date": "1727887154",
+  "type": "spelling",
+  "userId": "4b1fcc21-9598-49ac-a6ec-06ebfc08f7ad",
+  "words": [
+    {
+      "word": "Adventure",
+      "attemptedSpelling": "adventare",
+      "isCorrect": false,
+      "correctCount": 9,
+      "incorrectCount": 3
+    },
+    {
+      "word": "Absent",
+      "attemptedSpelling": "adbsent",
+      "isCorrect": false,
+      "correctCount": 5,
+      "incorrectCount": 4
+    }
+    // More words
+  ],
+  "summary": {
+    "totalWords": 10,
+    "correctWords": 5,
+    "incorrectWords": 5,
+    "accuracy": 0.50
+  }
+}
+```

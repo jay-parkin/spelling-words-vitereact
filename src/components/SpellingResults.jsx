@@ -12,6 +12,14 @@ const Results = ({ correctAttempts, attempts }) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
+  // Save the spelling as complete
+  const spellingIsDone = {
+    date: new Date().toISOString(),
+    status: true,
+  };
+
+  localStorage.setItem("spellingIsDone", JSON.stringify(spellingIsDone));
+
   return (
     <div className="spelling-results-body">
       <div className="spelling-results-container-outline">
@@ -73,32 +81,6 @@ const Results = ({ correctAttempts, attempts }) => {
       </div>
     </div>
   );
-
-  // return (
-  //   <div className="spelling-results-body">
-  //     <div className="spelling-results-container">
-  //       <div className="spelling-result-header">
-  //         <h2>Spelling Report</h2>
-  //       </div>
-
-  //       <h3>
-  //         Results: {correctAttempts}/{attempts.length}
-  //       </h3>
-
-  //       <ul>
-  //         {attempts.map((attempt, index) => (
-  //           <li key={index}>
-  //             <strong>{attempt.word}</strong>:{" "}
-  //             {attempt.isCorrect
-  //               ? "Correct"
-  //               : `Incorrect (Your answer: ${attempt.userInput}, Correct answer: ${attempt.word})`}
-  //           </li>
-  //         ))}
-  //       </ul>
-
-  //     </div>
-  //   </div>
-  // );
 };
 
 export default Results;

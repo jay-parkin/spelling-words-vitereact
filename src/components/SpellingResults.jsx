@@ -3,7 +3,9 @@ import { useState } from "react";
 
 import { LuChevronDown } from "react-icons/lu";
 
-const Results = ({ correctAttempts, attempts }) => {
+export default function SpellingResults(props) {
+  const { correctAttempts, attempts } = props;
+
   // State to track the currently open index
   const [openIndex, setOpenIndex] = useState(null);
 
@@ -81,6 +83,4 @@ const Results = ({ correctAttempts, attempts }) => {
       </div>
     </div>
   );
-};
-
-export default Results;
+}

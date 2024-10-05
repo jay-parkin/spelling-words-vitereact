@@ -8,6 +8,12 @@ import randomColourProperty from "../functions/RandomColourProperty";
 
 const TOTAL_WORDS = 10;
 
+function getWeekNumber(date) {
+  const startOfYear = new Date(date.getFullYear(), 0, 1);
+  const pastDaysOfYear = (date - startOfYear) / 86400000;
+  return Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7);
+}
+
 function getRandomWords(wordSet, count = TOTAL_WORDS) {
   const words = Object.keys(wordSet);
 
@@ -24,11 +30,10 @@ function getRandomWords(wordSet, count = TOTAL_WORDS) {
   }));
 }
 
-
 export default function SpellingWords({ userId }) {
   // Get week and day for localstorage name
   const today = new Date().getDay();
-  const week = new Date().getWeek();
+  const week = getWeekNumber(new Date());
 
   // Get the spelling list for the week from localStorage or create a new one
   const storedWordList = localStorage.getItem(`spellingWordsWeek`);

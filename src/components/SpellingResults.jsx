@@ -1,10 +1,30 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 
 import { LuChevronDown } from "react-icons/lu";
 
 export default function SpellingResults(props) {
   const { correctAttempts, attempts } = props;
+
+  // Add states to change the current props before using them
+  const [currentAttempts, setCurrentAttempts] = useState(attempts);
+  const [currentCorrect, setCurrentCorrect] = useState(correctAttempts);
+
+  useEffect(() => {
+    if (attempts.length == 0) {
+      // Get today's date in 'YYYY-MM-DD' format
+      const today = new Date().toISOString().split("T")[0];
+
+      // Pull the spelling sessions from localStorage
+      const storedSessions =
+        JSON.parse(localStorage.getItem("spellingSessions")) || [];
+
+      let currentSession = storedSessions[storedSessions.length - 1];
+      setCurrentAttempts(currentSession.words);
+
+      setCurrentCorrect(currentSession.summary.correctWords);
+    }
+  }, [attempts]);
 
   // State to track the currently open index
   const [openIndex, setOpenIndex] = useState(null);
@@ -35,7 +55,7 @@ export default function SpellingResults(props) {
               {/* Add a summary from an object of a 
               bunch of different inspiring words.
               Summary must be out of a percent of correct answers*/}
-              Summary: {correctAttempts}/{attempts.length}
+              Summary: {currentCorrect}/{currentAttempts.length}
               <p>Well Done! You gave it your all!</p>
             </h3>
           </section>
@@ -47,7 +67,7 @@ export default function SpellingResults(props) {
 
           <section>
             <ul className="spelling-item-list">
-              {attempts.map((attempt, index) => (
+              {currentAttempts.map((attempt, index) => (
                 <li key={index} className="accordion-item">
                   <div
                     onClick={() => handleToggle(index)}

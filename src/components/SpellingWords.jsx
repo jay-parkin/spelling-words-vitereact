@@ -8,6 +8,11 @@ import randomColourProperty from "../functions/RandomColourProperty";
 
 const TOTAL_WORDS = 10;
 
+// when the first opens the spelling they set a session with a date.
+// - any time the user comes back, the date is checked.
+// 	- if date exists continue the same sessions,
+// 	- if not date for today, starts a new session.
+
 function getWeekNumber(date) {
   const startOfYear = new Date(date.getFullYear(), 0, 1);
   const pastDaysOfYear = (date - startOfYear) / 86400000;
@@ -45,8 +50,8 @@ export default function SpellingWords({ userId }) {
   const [randomWords, setRandomWords] = useState(initialWordList);
 
   // Retrieve and parse the data from localStorage
-  const storedStatusData = localStorage.getItem("spellingIsDone");
-  const spellingIsDone = storedStatusData ? JSON.parse(storedStatusData) : null;
+  // const storedStatusData = localStorage.getItem("spellingIsDone");
+  // const spellingIsDone = storedStatusData ? JSON.parse(storedStatusData) : null;
 
   // State to keep track of the current word index
   const [currentWordIndex, setCurrentWordIndex] = useState(() => {
@@ -66,23 +71,19 @@ export default function SpellingWords({ userId }) {
     localStorage.setItem(`spellingWordsWeek`, JSON.stringify(randomWords));
   }, [randomWords, week]);
 
-  // create a function to reset the spelling status and index
-  // useEffect(() => {
-  //   // Save the spelling as false
-  //   const spellingIsDone = {
-  //     date: new Date().toISOString(),
-  //     status: false,
-  //   };
+  useEffect(() => {
+    // Pull the last session save and check its date
 
-  //   localStorage.setItem("spellingIsDone", JSON.stringify(spellingIsDone));
-  // }, [today]);
+    const spellingSessions = JSON.parse(
+      localStorage.getItem("spellingSessions")
+    );
 
-  // // Populate the state with random words when the component mounts
-  // useEffect(() => {
-  //   const selectedWords = getRandomWords(wordSet);
-  //   setRandomWords(selectedWords);
-  //   setCurrentWordIndex(0); // Ensure index starts from 0
-  // }, []);
+    // Ensure spellingSessions exists and is an array
+    if (spellingSessions && Array.isArray(spellingSessions)) {
+      // Access the last session in the array
+      const currentSession = spellingSessions[spellingSessions.length - 1];
+    }
+  }, [today]);
 
   const handleNextWord = () => {
     setCurrentWordIndex((prevIndex) => {
@@ -102,18 +103,6 @@ export default function SpellingWords({ userId }) {
       { word, userInput, isCorrect },
     ]);
   };
-
-  // Access the status directly
-  const isStatusDone = spellingIsDone ? spellingIsDone.status : false;
-  console.log(isStatusDone);
-  if (spellingIsDone && spellingIsDone.status) {
-    return (
-      <SpellingResults
-        correctAttempts={attempts.filter((a) => a.isCorrect).length}
-        attempts={attempts}
-      />
-    );
-  }
 
   // Render Results if all words are completed
   if (randomWords.length > 0 && currentWordIndex === randomWords.length - 1) {

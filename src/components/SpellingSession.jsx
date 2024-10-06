@@ -5,12 +5,19 @@ import wordSet from "../data/WordsList";
 export default function SpellingSession({ userId, attempts, setAttempts }) {
   const [localSessionId, setLocalSessionId] = useState(null);
   const [localSessionDate, setLocalSessionDate] = useState(null);
-  //   const [attempts, setAttempts] = useState([]);
 
   useEffect(() => {
-    setLocalSessionId(uuidv4);
-    setLocalSessionDate(new Date().toISOString());
+    // Call uuidv4() and new Date().toISOString() properly to set the session ID and date
+    setLocalSessionId(uuidv4()); // Invoke uuidv4() here
+    setLocalSessionDate(new Date().toISOString()); // Correctly set the date
   }, []);
+
+  useEffect(() => {
+    // Only save if there are attempts to save
+    if (attempts.length > 0) {
+      saveSpellingSession();
+    }
+  }, [attempts]);
 
   const updateWordStats = (attempts) => {
     // Retrieve existing word stats or initialise empty object
@@ -62,8 +69,8 @@ export default function SpellingSession({ userId, attempts, setAttempts }) {
 
     // Create session data object
     const sessionData = {
-      id: localSessionId,
-      date: localSessionDate,
+      id: localSessionId, // This should now be a proper UUID
+      date: localSessionDate, // This should now be a valid ISO date string
       type: "spelling",
       userId: userId,
       words: updatedAttempts,
@@ -81,12 +88,11 @@ export default function SpellingSession({ userId, attempts, setAttempts }) {
     existingSessions.push(sessionData);
     localStorage.setItem("spellingSessions", JSON.stringify(existingSessions));
 
+    console.log("Session auto-saved!", sessionData);
+
+    // Optionally reset attempts after saving the session
     // setAttempts([]);
   };
 
-  return (
-    <div>
-      <button onClick={saveSpellingSession}>Save Session</button>
-    </div>
-  );
+  return null;
 }

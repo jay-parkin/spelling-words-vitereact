@@ -117,7 +117,8 @@
     "40": [
       {
         "day": 0,
-        "currentWordIndex": 10
+        "dayName": "Sunday",
+        "currentWordIndex": 10,
         "words": [
           {
             "word": "Adventure",
@@ -131,18 +132,19 @@
           "totalWords": 10,
           "correctWords": 5,
           "incorrectWords": 5,
-          "accuracy": 0.50
+          "accuracy": 0.50,
         }
       },
       {
         "day": 1,
+        "dayName": "Monday",
         "currentWordIndex": 9
-        "words": [
+        "words": [ // Words that were attampted daily
           {
             "word": "Adventure",
             "definition": "An exciting or unusual experience.",
             "userInput": "adventure",
-            "isCorrect": true
+            "isCorrect": true,
           }
           // More words
         ],
@@ -150,15 +152,24 @@
           "totalWords": 10,
           "correctWords": 9,
           "incorrectWords": 1,
-          "accuracy": 0.90
+          "accuracy": 0.90,
         }
       }
     ],
+      "wordList": [ // Word list for the week
+        {
+          "word": "Adventure",
+          "definition": "An exciting or unusual experience.",
+          "correctAttempt": 1,
+          "incorrectAttempt": 1,
+        }
+      ],
       "weeklySummary": {
+      "mostlyCommonlyMispelled": "Adventure",
       "totalWords": 50,
       "correctWords": 38,
       "incorrectWords": 12,
-      "accuracy": 0.76
+      "accuracy": 0.76,
     }
   }
 }

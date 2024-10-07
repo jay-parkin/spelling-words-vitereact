@@ -139,12 +139,16 @@ export function saveToDailyWordList(
       const day = week.days[dayNumber];
 
       if (day) {
+        // Push the current word to the daily word list
         day.words.push({
           word,
           definition,
           userInput,
           isCorrect,
         });
+
+        // Update the daily summary
+        day.dailySummary = submitDailySummary(day.dailySummary, isCorrect);
       }
 
       // Update the lastUpdated timestamp
@@ -157,6 +161,22 @@ export function saveToDailyWordList(
       );
     }
   }
+}
+
+function submitDailySummary(dailySummary, isCorrect) {
+  const totalWords = dailySummary.totalWords + 1;
+  const correctWords = dailySummary.correctWords + (isCorrect ? 1 : 0);
+  const incorrectWords = dailySummary.incorrectWords + (isCorrect ? 0 : 1);
+
+  // Calculate accuracy as a percentage
+  const accuracy = totalWords === 0 ? 0 : (correctWords / totalWords) * 100;
+
+  return {
+    totalWords,
+    correctWords,
+    incorrectWords,
+    accuracy,
+  };
 }
 
 export function initialiseSpellingSession(userId) {

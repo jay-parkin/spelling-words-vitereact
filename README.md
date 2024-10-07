@@ -111,11 +111,13 @@
 // Spelling.json
 {
   "userId": "4b1fcc21-9598-49ac-a6ec-06ebfc08f7ad",
+  "lastUpdated": "2024-10-06T07:07:43.871Z",
   "subject": "spelling",
   "week": {
     "40": [
       {
         "day": 0,
+        "currentWordIndex": 10
         "words": [
           {
             "word": "Adventure",
@@ -134,6 +136,7 @@
       },
       {
         "day": 1,
+        "currentWordIndex": 9
         "words": [
           {
             "word": "Adventure",

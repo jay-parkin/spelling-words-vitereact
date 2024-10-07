@@ -4,9 +4,11 @@ import SpellingResults from "./SpellingResults";
 import SpellingSession from "./SpellingSession";
 import wordSet from "../data/WordsList";
 
+import { initialiseSpellingSession } from "../functions/InitialiseStorageSessions";
 import randomColourProperty from "../functions/RandomColourProperty";
 
 const TOTAL_WORDS = 10;
+const USER_ID = "4b1fcc21-9598-49ac-a6ec-06ebfc08f7ad";
 
 // when the first opens the spelling they set a session with a date.
 // - any time the user comes back, the date is checked.
@@ -49,10 +51,6 @@ export default function SpellingWords({ userId }) {
   // Initialise state to hold the words for today
   const [randomWords, setRandomWords] = useState(initialWordList);
 
-  // Retrieve and parse the data from localStorage
-  // const storedStatusData = localStorage.getItem("spellingIsDone");
-  // const spellingIsDone = storedStatusData ? JSON.parse(storedStatusData) : null;
-
   // State to keep track of the current word index
   const [currentWordIndex, setCurrentWordIndex] = useState(() => {
     const storedIndex = localStorage.getItem(`currentWordIndex`);
@@ -72,18 +70,8 @@ export default function SpellingWords({ userId }) {
   }, [randomWords, week]);
 
   useEffect(() => {
-    // Pull the last session save and check its date
-
-    const spellingSessions = JSON.parse(
-      localStorage.getItem("spellingSessions")
-    );
-
-    // Ensure spellingSessions exists and is an array
-    if (spellingSessions && Array.isArray(spellingSessions)) {
-      // Access the last session in the array
-      const currentSession = spellingSessions[spellingSessions.length - 1];
-    }
-  }, [today]);
+    initialiseSpellingSession(USER_ID, week, today);
+  });
 
   const handleNextWord = () => {
     setCurrentWordIndex((prevIndex) => {

@@ -36,6 +36,47 @@ export function incrementCurrentWordIndex(userId, weekNumber, dayNumber) {
   }
 }
 
+export function getDailyWordList(userId, weekNumber, dayNumber) {
+  // Retrieve the spelling sessions from localStorage
+  let spellingSessions = localStorage.getItem("spellingSessions");
+
+  // Check if it needs parsing
+  if (typeof spellingSessions === "string") {
+    // Only parse if it's a string
+    spellingSessions = JSON.parse(spellingSessions);
+  }
+
+  // Handle case when no data is found
+  if (!spellingSessions) {
+    console.log("No spelling sessions found.");
+    return [];
+  }
+
+  // Find the user's session
+  const userSession = spellingSessions.find(
+    (session) => session.userId === userId
+  );
+
+  // If user session exists
+  if (userSession) {
+    // Access the specified week
+    const week = userSession.weeks[weekNumber];
+
+    if (week) {
+      // Access the specified day
+      const day = week.days[dayNumber];
+
+      if (day) {
+        // Return the current word index
+        return day.words;
+      }
+    }
+  }
+
+  // If no valid data was found, return an empty array
+  return [];
+}
+
 export function getWeekWordList(userId, weekNumber) {
   // Retrieve the spelling sessions from localStorage
   let spellingSessions = localStorage.getItem("spellingSessions");
@@ -179,6 +220,39 @@ function submitDailySummary(dailySummary, isCorrect) {
   };
 }
 
+export function getDailyPercentage(userId, weekNumber, dayNumber) {
+  // Retrieve the spelling sessions from localStorage
+  const spellingSessions = JSON.parse(localStorage.getItem("spellingSessions"));
+
+  // Check if spellingSessions exists and is not null
+  if (!spellingSessions) {
+    console.error("No spelling sessions found.");
+    return;
+  }
+
+  // Find the user's session
+  const userSession = spellingSessions.find(
+    (session) => session.userId === userId
+  );
+
+  // If the user session exists
+  if (userSession) {
+    // Access the specified week
+    const week = userSession.weeks[weekNumber];
+
+    if (week) {
+      // Access the specified day
+      const day = week.days[dayNumber];
+
+      if (day) {
+        // return the daily summary percentage
+        return day.dailySummary.accuracy;
+      }
+    }
+  }
+  return null;
+}
+
 export function initialiseSpellingSession(userId) {
   // Check if spelling sessions already exist in localStorage
   const existingSpellingSessions = JSON.parse(
@@ -208,7 +282,6 @@ export function initialiseSpellingSession(userId) {
 export function addWeekAndDay(userId, weekNumber, dayNumber, wordList) {
   const spellingSessions = JSON.parse(localStorage.getItem("spellingSessions"));
 
-  console.log(wordList);
   // Find the user's session
   const userSession = spellingSessions.find(
     (session) => session.userId === userId

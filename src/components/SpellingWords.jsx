@@ -110,7 +110,6 @@ export default function SpellingWords({ userId }) {
     );
   };
 
-  console.log(`index: ${localCurrentWordIndex} / ${weeklyWordList.length}`);
   // Render Results if all words are completed
   if (
     weeklyWordList.length > 0 &&
@@ -118,10 +117,7 @@ export default function SpellingWords({ userId }) {
   ) {
     return (
       <>
-        {/* <SpellingResults
-          correctAttempts={attempts.filter((a) => a.isCorrect).length}
-          attempts={attempts}
-        /> */}
+        <SpellingResults userId={USER_ID} weekNumber={week} dayNumber={today} />
       </>
     );
   }

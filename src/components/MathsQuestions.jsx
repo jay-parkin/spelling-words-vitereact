@@ -54,7 +54,6 @@ export default function MathsQuestions() {
       generateRandomEquation(idCounter++)
     );
 
-    console.log("All questions generated:", newQuestions);
     setQuestions(newQuestions);
     setDisplayedQuestions(newQuestions.slice(0, QUESTIONS_PER_PAGE));
   };

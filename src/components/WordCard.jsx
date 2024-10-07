@@ -53,8 +53,7 @@ export default function WordCard(props) {
 
   // Function to handle the "Next Word" button click
   const handleNextWordClick = () => {
-    const isCorrect = inputValue.trim().toLowerCase() === word.toLowerCase();
-    onAttempt(word, inputValue.trim(), isCorrect); // Notify parent component
+    onAttempt(inputValue.trim()); // Notify parent component
 
     setInputValue(""); // Clear the input field
     setInputDisabled(true); // Disable the input field

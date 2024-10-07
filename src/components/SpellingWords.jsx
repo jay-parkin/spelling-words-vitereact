@@ -1,12 +1,21 @@
 import React, { useState, useEffect } from "react";
 import WordCard from "./WordCard";
 import SpellingResults from "./SpellingResults";
-import SpellingSession from "./SpellingSession";
+
+import {
+  incrementCurrentWordIndex,
+  getCurentWordIndex,
+  initialiseSpellingSession,
+  addWeekAndDay,
+  getWeekWordList,
+  saveToDailyWordList,
+} from "../functions/SpellingSessionUtils";
 import wordSet from "../data/WordsList";
 
 import randomColourProperty from "../functions/RandomColourProperty";
 
 const TOTAL_WORDS = 10;
+const USER_ID = "4b1fcc21-9598-49ac-a6ec-06ebfc08f7ad";
 
 // when the first opens the spelling they set a session with a date.
 // - any time the user comes back, the date is checked.
@@ -32,6 +41,8 @@ function getRandomWords(wordSet, count = TOTAL_WORDS) {
   return words.slice(0, count + 1).map((word) => ({
     word,
     definition: wordSet[word],
+    incorrectAttempt: 0,
+    correctAttempt: 0,
   }));
 }
 
@@ -40,83 +51,73 @@ export default function SpellingWords({ userId }) {
   const today = new Date().getDay();
   const week = getWeekNumber(new Date());
 
-  // Get the spelling list for the week from localStorage or create a new one
-  const storedWordList = localStorage.getItem(`spellingWordsWeek`);
-  const initialWordList = storedWordList
-    ? JSON.parse(storedWordList)
-    : getRandomWords(wordSet);
-
-  // Initialise state to hold the words for today
-  const [randomWords, setRandomWords] = useState(initialWordList);
-
-  // Retrieve and parse the data from localStorage
-  // const storedStatusData = localStorage.getItem("spellingIsDone");
-  // const spellingIsDone = storedStatusData ? JSON.parse(storedStatusData) : null;
-
-  // State to keep track of the current word index
-  const [currentWordIndex, setCurrentWordIndex] = useState(() => {
-    const storedIndex = localStorage.getItem(`currentWordIndex`);
-    return storedIndex ? parseInt(storedIndex, 10) : 0; // Default to 0 if not found
-  });
-
+  const [localCurrentWordIndex, setLocalCurrentWordIndex] = useState(0);
+  const [weeklyWordList, setWordList] = useState([]);
   const [attempts, setAttempts] = useState([]);
 
-  // Store the current word index in localStorage whenever it changes
+  // Check or initialise user session
   useEffect(() => {
-    localStorage.setItem(`currentWordIndex`, currentWordIndex);
-  }, [currentWordIndex, today]);
+    initialiseSpellingSession(USER_ID);
+    const storedWordList = getWeekWordList(USER_ID, week);
 
-  // Store the word list in localStorage for the week
-  useEffect(() => {
-    localStorage.setItem(`spellingWordsWeek`, JSON.stringify(randomWords));
-  }, [randomWords, week]);
+    // Check if the word list exists and if the week is the same
+    if (storedWordList.length === 0) {
+      const initialWordList = getRandomWords(wordSet);
+      addWeekAndDay(USER_ID, week, today, initialWordList);
 
-  useEffect(() => {
-    // Pull the last session save and check its date
-
-    const spellingSessions = JSON.parse(
-      localStorage.getItem("spellingSessions")
-    );
-
-    // Ensure spellingSessions exists and is an array
-    if (spellingSessions && Array.isArray(spellingSessions)) {
-      // Access the last session in the array
-      const currentSession = spellingSessions[spellingSessions.length - 1];
+      // Set the word list in state
+      setWordList(initialWordList);
+    } else {
+      // Load the existing word list
+      setWordList(storedWordList);
     }
-  }, [today]);
+
+    // make sure the wordlist is created
+    addWeekAndDay(USER_ID, week, today, storedWordList);
+  }, [today, week]);
+
+  useEffect(() => {
+    const currentWordIndex = getCurentWordIndex(USER_ID, week, today);
+    setLocalCurrentWordIndex(currentWordIndex);
+  }, [weeklyWordList]);
 
   const handleNextWord = () => {
-    setCurrentWordIndex((prevIndex) => {
-      if (prevIndex < randomWords.length - 1) {
-        return prevIndex + 1;
-      } else {
-        console.log("All words completed!");
-        // Return the same index to stay on the last word
-        return prevIndex;
-      }
-    });
+    incrementCurrentWordIndex(USER_ID, week, today);
+    setLocalCurrentWordIndex(getCurentWordIndex(USER_ID, week, today));
   };
 
-  const handleAttempt = (word, userInput, isCorrect) => {
-    setAttempts((prevAttempts) => [
-      ...prevAttempts,
-      { word, userInput, isCorrect },
-    ]);
+  const handleAttempt = (userInput) => {
+    // Get the current word and its definition
+    const currentWordData = getWeekWordList(USER_ID, week)[
+      localCurrentWordIndex
+    ];
+
+    const word = currentWordData.word;
+    const definition = currentWordData.definition;
+
+    // Check if the user's input is correct
+    const isCorrect = userInput.trim().toLowerCase() === word.toLowerCase();
+
+    // Call the function to save attempts and word information
+    saveToDailyWordList(
+      USER_ID,
+      week,
+      today,
+      word,
+      definition,
+      userInput,
+      isCorrect
+    );
   };
 
   // Render Results if all words are completed
-  if (randomWords.length > 0 && currentWordIndex === randomWords.length - 1) {
+  if (
+    weeklyWordList.length > 0 &&
+    localCurrentWordIndex === weeklyWordList.length - 1
+  ) {
     return (
       <>
-        <SpellingResults
-          correctAttempts={attempts.filter((a) => a.isCorrect).length}
-          attempts={attempts}
-        />
-        <SpellingSession
-          userId={userId}
-          attempts={attempts}
-          setAttempts={setAttempts}
-        />
+        <SpellingResults userId={USER_ID} weekNumber={week} dayNumber={today} />
       </>
     );
   }
@@ -124,10 +125,11 @@ export default function SpellingWords({ userId }) {
   return (
     <section className="spelling-body">
       {/* Display the current word */}
-      {randomWords.length > 0 && currentWordIndex < randomWords.length ? (
+      {weeklyWordList.length > 0 &&
+      localCurrentWordIndex < weeklyWordList.length ? (
         <WordCard
-          word={randomWords[currentWordIndex].word}
-          definition={randomWords[currentWordIndex].definition}
+          word={weeklyWordList[localCurrentWordIndex].word}
+          definition={weeklyWordList[localCurrentWordIndex].definition}
           onNextWord={handleNextWord}
           onAttempt={handleAttempt}
           designColour={randomColourProperty}

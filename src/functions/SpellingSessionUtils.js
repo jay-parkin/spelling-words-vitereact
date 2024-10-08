@@ -192,7 +192,29 @@ export function saveToDailyWordList(
         day.dailySummary = submitDailySummary(day.dailySummary, isCorrect);
       }
 
-      week.weeklySummary = submitWeeklySummary(week.weeklySummary,)
+      // Update the weekly word list stats
+      const wordInWeekList = week.wordList.find((w) => w.word === word);
+
+      if (wordInWeekList) {
+        // Update correct/incorrect attempts
+        if (isCorrect) {
+          wordInWeekList.correctAttempt += 1;
+        } else {
+          wordInWeekList.incorrectAttempt += 1;
+        }
+
+        // Update weekly summary stats
+        week.weeklySummary.totalWords += 1;
+        week.weeklySummary.correctWords += isCorrect ? 1 : 0;
+        week.weeklySummary.incorrectWords += isCorrect ? 0 : 1;
+        week.weeklySummary.accuracy = calculateWeeklyAccuracy(
+          week.weeklySummary
+        );
+
+        // Update mostCommonlyMisspelt word
+        week.weeklySummary.mostCommonlyMisspelt =
+          calculateMostCommonlyMisspeltWord(week.wordList);
+      }
 
       // Update the lastUpdated timestamp
       userSession.lastUpdated = new Date().toISOString();
@@ -206,6 +228,30 @@ export function saveToDailyWordList(
   }
 }
 
+function calculateMostCommonlyMisspeltWord(wordList) {
+  let mostMisspeltWord = "";
+  let maxIncorrectAttempts = 0;
+
+  // Loop through the word list to find the word with the highest incorrectAttempt count
+  wordList.forEach((wordData) => {
+    if (wordData.incorrectAttempt > maxIncorrectAttempts) {
+      mostMisspeltWord = wordData.word;
+      maxIncorrectAttempts = wordData.incorrectAttempt;
+    }
+  });
+
+  // Return the word with the highest incorrect attempts
+  return mostMisspeltWord;
+}
+
+function calculateWeeklyAccuracy(weeklySummary) {
+  const totalWords = weeklySummary.totalWords;
+  const correctWords = weeklySummary.correctWords;
+
+  // Calculate accuracy as a percentage
+  return totalWords === 0 ? 0 : (correctWords / totalWords) * 100;
+}
+
 function submitDailySummary(dailySummary, isCorrect) {
   const totalWords = dailySummary.totalWords + 1;
   const correctWords = dailySummary.correctWords + (isCorrect ? 1 : 0);
@@ -216,23 +262,6 @@ function submitDailySummary(dailySummary, isCorrect) {
 
   return {
     totalWords,
-    correctWords,
-    incorrectWords,
-    accuracy,
-  };
-}
-
-function submitWeeklySummary(dailySummary, isCorrect) {
-  const totalWords = dailySummary.totalWords + 1;
-  const correctWords = dailySummary.correctWords + (isCorrect ? 1 : 0);
-  const incorrectWords = dailySummary.incorrectWords + (isCorrect ? 0 : 1);
-
-  // Calculate accuracy as a percentage
-  const accuracy = totalWords === 0 ? 0 : (correctWords / totalWords) * 100;
-
-  return {
-    totalWords,
-    mostCommonlyMispelled,
     correctWords,
     incorrectWords,
     accuracy,
@@ -319,7 +348,7 @@ export function addWeekAndDay(userId, weekNumber, dayNumber, wordList) {
         wordList: wordList,
         weeklySummary: {
           totalWords: 0,
-          mostCommonlyMispelled: "",
+          mostCommonlyMisspelt: "",
           correctWords: 0,
           incorrectWords: 0,
           accuracy: 0,

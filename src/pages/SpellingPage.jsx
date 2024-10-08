@@ -1,5 +1,7 @@
 import SpellingWords from "../components/SpellingWords";
 
+import "../styles/SpellingPage.css";
+
 export default function SpellingPage() {
   return (
     <>

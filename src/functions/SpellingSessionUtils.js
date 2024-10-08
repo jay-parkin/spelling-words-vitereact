@@ -403,3 +403,43 @@ function getDayName(today) {
     return "Invalid day number";
   }
 }
+
+export function getTodaysTotalWordsPercentage(userId, weekNumber, dayNumber) {
+  // Retrieve the spelling sessions from localStorage
+  const spellingSessions = JSON.parse(localStorage.getItem("spellingSessions"));
+
+  // Check if spellingSessions exists and is not null
+  if (!spellingSessions) {
+    console.error("No spelling sessions found.");
+    return null; // Return null if no sessions exist
+  }
+
+  // Find the user's session
+  const userSession = spellingSessions.find(
+    (session) => session.userId === userId
+  );
+
+  // If the user session exists
+  if (userSession) {
+    // Access the specified week
+    const week = userSession.weeks[weekNumber];
+
+    if (week) {
+      // Access the specified day
+      const day = week.days[dayNumber];
+
+      if (day) {
+        // Get the total words for the day
+        const totalWords = day.dailySummary.totalWords;
+        // Calculate the percentage out of 10 words
+        const percentage = (totalWords / 10) * 100;
+        // Return the percentage, capped at 100%
+        return Math.min(percentage, 100);
+      }
+    }
+  }
+  
+  // Return null if no valid data was found
+  return null;
+}
+

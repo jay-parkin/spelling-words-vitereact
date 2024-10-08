@@ -4,8 +4,6 @@ import Form from "react-bootstrap/Form";
 import { BiBook } from "react-icons/bi";
 import { BiChevronLeft } from "react-icons/bi";
 
-import "../styles/SpellingPage.css";
-
 /**
  * header
  * definition icon - component

@@ -192,6 +192,8 @@ export function saveToDailyWordList(
         day.dailySummary = submitDailySummary(day.dailySummary, isCorrect);
       }
 
+      week.weeklySummary = submitWeeklySummary(week.weeklySummary,)
+
       // Update the lastUpdated timestamp
       userSession.lastUpdated = new Date().toISOString();
 
@@ -214,6 +216,23 @@ function submitDailySummary(dailySummary, isCorrect) {
 
   return {
     totalWords,
+    correctWords,
+    incorrectWords,
+    accuracy,
+  };
+}
+
+function submitWeeklySummary(dailySummary, isCorrect) {
+  const totalWords = dailySummary.totalWords + 1;
+  const correctWords = dailySummary.correctWords + (isCorrect ? 1 : 0);
+  const incorrectWords = dailySummary.incorrectWords + (isCorrect ? 0 : 1);
+
+  // Calculate accuracy as a percentage
+  const accuracy = totalWords === 0 ? 0 : (correctWords / totalWords) * 100;
+
+  return {
+    totalWords,
+    mostCommonlyMispelled,
     correctWords,
     incorrectWords,
     accuracy,

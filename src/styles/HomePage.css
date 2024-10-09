@@ -3,7 +3,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  /* max-width: 600px; */
+  flex-wrap: wrap;
   margin-left: 20px;
   margin-right: 20px;
 }
@@ -32,8 +32,6 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
-  /* justify-content: space-between; */
-  /* align-items: center; */
   width: 100%;
 }
 
@@ -90,4 +88,51 @@
 .stats-weekly-summary h6 {
   margin-right: 5px;
   font-size: 15px;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+  .home-container {
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .stats-container {
+    width: 90%;
+  }
+
+  .stats-inner-container {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 655px) {
+  .stats-container {
+    width: 100%;
+    margin: 20px 0;
+  }
+
+  .stats-weekly-summary {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-container {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .progress h5,
+  .stats-summary-container h5 {
+    font-size: 16px;
+  }
+
+  .stats-circle-progress {
+    width: 100px;
+  }
+
+  .stats-weekly-summary {
+    font-size: 16px;
+  }
 }

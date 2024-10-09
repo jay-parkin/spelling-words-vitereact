@@ -7,7 +7,6 @@ import Header from "./components/Header.jsx";
 import "./styles/HomePage.css";
 import "./styles/Index.css";
 import "./styles/Navbar.css";
-import "./styles/HomePageProgressBar.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

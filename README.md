@@ -165,7 +165,7 @@
         }
       ],
       "weeklySummary": {
-      "mostCommonlyMispelled": "Adventure",
+      "mostCommonlyMisspelt": "Adventure",
       "totalWords": 50,
       "correctWords": 38,
       "incorrectWords": 12,

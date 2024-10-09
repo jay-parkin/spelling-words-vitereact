@@ -268,7 +268,7 @@ function submitDailySummary(dailySummary, isCorrect) {
   };
 }
 
-export function getDailyPercentage(userId, weekNumber, dayNumber) {
+export function getDailyAccuracy(userId, weekNumber, dayNumber) {
   // Retrieve the spelling sessions from localStorage
   const spellingSessions = JSON.parse(localStorage.getItem("spellingSessions"));
 
@@ -296,6 +296,34 @@ export function getDailyPercentage(userId, weekNumber, dayNumber) {
         // return the daily summary percentage
         return day.dailySummary.accuracy;
       }
+    }
+  }
+  return null;
+}
+
+export function getWeeklyAccuracy(userId, weekNumber) {
+  // Retrieve the spelling sessions from localStorage
+  const spellingSessions = JSON.parse(localStorage.getItem("spellingSessions"));
+
+  // Check if spellingSessions exists and is not null
+  if (!spellingSessions) {
+    console.error("No spelling sessions found.");
+    return;
+  }
+
+  // Find the user's session
+  const userSession = spellingSessions.find(
+    (session) => session.userId === userId
+  );
+
+  // If the user session exists
+  if (userSession) {
+    // Access the specified week
+    const week = userSession.weeks[weekNumber];
+
+    if (week) {
+      // return the weekly summary percentage
+      return week.weeklySummary.accuracy;
     }
   }
   return null;
@@ -404,7 +432,7 @@ function getDayName(today) {
   }
 }
 
-export function getTodaysTotalWordsPercentage(userId, weekNumber, dayNumber) {
+export function getDailyAttemptedPercent(userId, weekNumber, dayNumber) {
   // Retrieve the spelling sessions from localStorage
   const spellingSessions = JSON.parse(localStorage.getItem("spellingSessions"));
 
@@ -438,8 +466,69 @@ export function getTodaysTotalWordsPercentage(userId, weekNumber, dayNumber) {
       }
     }
   }
-  
+
   // Return null if no valid data was found
   return null;
 }
 
+export function getWeeklyAttemptedPercent(userId, weekNumber) {
+  // Retrieve the spelling sessions from localStorage
+  const spellingSessions = JSON.parse(localStorage.getItem("spellingSessions"));
+
+  // Check if spellingSessions exists and is not null
+  if (!spellingSessions) {
+    console.error("No spelling sessions found.");
+    return null; // Return null if no sessions exist
+  }
+
+  // Find the user's session
+  const userSession = spellingSessions.find(
+    (session) => session.userId === userId
+  );
+
+  // If the user session exists
+  if (userSession) {
+    // Access the specified week
+    const week = userSession.weeks[weekNumber];
+
+    if (week) {
+      // Get the total words for the week
+      const totalWords = week.weeklySummary.totalWords;
+      // Calculate the percentage out of 10 words
+      const percentage = (totalWords / 10) * 100;
+      // Return the percentage, capped at 100%
+      return Math.min(percentage, 100);
+    }
+  }
+
+  // Return null if no valid data was found
+  return null;
+}
+
+export function getWeeklySummary(userId, weekNumber) {
+  // Retrieve the spelling sessions from localStorage
+  const spellingSessions = JSON.parse(localStorage.getItem("spellingSessions"));
+
+  // Check if spellingSessions exists and is not null
+  if (!spellingSessions) {
+    console.error("No spelling sessions found.");
+    return;
+  }
+
+  // Find the user's session
+  const userSession = spellingSessions.find(
+    (session) => session.userId === userId
+  );
+
+  // If the user session exists
+  if (userSession) {
+    // Access the specified week
+    const week = userSession.weeks[weekNumber];
+
+    if (week) {
+      // return the weekly summary
+      return week.weeklySummary;
+    }
+  }
+  return null;
+}

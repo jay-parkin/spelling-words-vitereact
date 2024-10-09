@@ -13,6 +13,7 @@ import {
 import wordSet from "../data/WordsList";
 
 import randomColourProperty from "../functions/RandomColourProperty";
+import { getWeekNumber } from "../functions/TimeUtils";
 
 const TOTAL_WORDS = 10;
 const USER_ID = "4b1fcc21-9598-49ac-a6ec-06ebfc08f7ad";
@@ -21,12 +22,6 @@ const USER_ID = "4b1fcc21-9598-49ac-a6ec-06ebfc08f7ad";
 // - any time the user comes back, the date is checked.
 // 	- if date exists continue the same sessions,
 // 	- if not date for today, starts a new session.
-
-function getWeekNumber(date) {
-  const startOfYear = new Date(date.getFullYear(), 0, 1);
-  const pastDaysOfYear = (date - startOfYear) / 86400000;
-  return Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7);
-}
 
 function getRandomWords(wordSet, count = TOTAL_WORDS) {
   const words = Object.keys(wordSet);
@@ -53,7 +48,6 @@ export default function SpellingWords({ userId }) {
 
   const [localCurrentWordIndex, setLocalCurrentWordIndex] = useState(0);
   const [weeklyWordList, setWordList] = useState([]);
-  const [attempts, setAttempts] = useState([]);
 
   // Check or initialise user session
   useEffect(() => {

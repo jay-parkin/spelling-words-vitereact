@@ -1,3 +1,13 @@
+.home-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  /* max-width: 600px; */
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
 .stats-body {
   display: flex;
   flex-direction: column;
@@ -6,26 +16,78 @@
 
 .stats-container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 600px;
+  width: 800px;
   padding: 20px;
   border: 1px solid #eaeaea;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background-color: #fff;
+  margin: 20px;
+  color: #8e8e8e;
+}
+.stats-inner-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  /* justify-content: space-between; */
+  /* align-items: center; */
+  width: 100%;
 }
 
-.stats-container h4 {
+.stats-container h3 {
   margin: 5px 20px 5px 5px;
   width: 60px;
 }
 
+.stats-progress-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+  margin-top: 20px;
+}
+
 .progress {
+  margin-top: 10px;
+  margin-bottom: 10px;
   width: 100%;
 }
 
-.stats-container h4 {
-  color: #8e8e8e;
+.progress h5 {
+  margin-left: 20px;
+}
+
+.stats-circle-progress {
+  margin: 20px;
+  width: 130px;
+}
+
+.stats-summary-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  margin: 10px;
+  margin-top: 20px;
+}
+
+.stats-summary-container h5 {
+  margin-bottom: 20px;
+}
+
+.stats-weekly-summary {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+}
+
+.stats-weekly-summary h6 {
+  margin-right: 5px;
+  font-size: 15px;
 }

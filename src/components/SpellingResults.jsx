@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 
 import {
-  getDailyPercentage,
+  getDailyAccuracy,
   getDailyWordList,
 } from "../functions/SpellingSessionUtils";
 
@@ -13,7 +13,7 @@ export default function SpellingResults(props) {
 
   // Pull accuracy from localstorage
   const [localStoragePercentage] = useState(() => {
-    const percentage = getDailyPercentage(userId, weekNumber, dayNumber);
+    const percentage = getDailyAccuracy(userId, weekNumber, dayNumber);
     return percentage;
   });
 

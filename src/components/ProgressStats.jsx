@@ -21,19 +21,19 @@ export default function ProgressStats(props) {
             <h3>Spelling</h3>
             <div className="stats-inner-container">
               <div className="progress">
-                <h5>Completed</h5>
+                <h5>Daily Completed</h5>
                 <ProgressBar score={dailyAttemptPercentage} />
               </div>
 
               <div className="progress">
-                <h5>Accuracy</h5>
+                <h5>Daily Accuracy</h5>
 
                 <ProgressBar score={dailyAccuracy} progressColor="blue" />
               </div>
             </div>
             <div className="stats-inner-container">
               <div className="stats-progress-container">
-                <h5>Weekly Words</h5>
+                <h5>Weekly Words Attempted</h5>
                 <ProgressProvider
                   valueStart={0}
                   valueEnd={weeklyAttemptPercentage}

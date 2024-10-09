@@ -13,17 +13,15 @@ import {
 import wordSet from "../data/WordsList";
 
 import randomColourProperty from "../functions/RandomColourProperty";
-import { getWeekNumber } from "../functions/TimeUtils";
-
-const TOTAL_WORDS = 10;
-const USER_ID = "4b1fcc21-9598-49ac-a6ec-06ebfc08f7ad";
+import { getWeekNumber } from "../functions/TimeUtils.js";
+import getUserId, { getSpellingWordsCount } from "../functions/UserSettings.js";
 
 // when the first opens the spelling they set a session with a date.
 // - any time the user comes back, the date is checked.
 // 	- if date exists continue the same sessions,
 // 	- if not date for today, starts a new session.
 
-function getRandomWords(wordSet, count = TOTAL_WORDS) {
+function getRandomWords(wordSet, count = getSpellingWordsCount()) {
   const words = Object.keys(wordSet);
 
   // Shuffle the words array
@@ -48,6 +46,7 @@ export default function SpellingWords({ userId }) {
 
   const [localCurrentWordIndex, setLocalCurrentWordIndex] = useState(0);
   const [weeklyWordList, setWordList] = useState([]);
+  const [USER_ID] = useState(getUserId());
 
   // Check or initialise user session
   useEffect(() => {

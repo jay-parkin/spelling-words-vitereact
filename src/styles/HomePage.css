@@ -93,62 +93,46 @@
 /* Media Queries for Responsive Design */
 @media (max-width: 768px) {
   .home-container {
-    width: 100%;
-    margin: 0;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: flex-start; /* Components will stack vertically */
   }
 
   .stats-container {
-    width: 90%;
-    margin-left: 5%;
-    margin-right: 5%;
+    width: 90%; /* Adjust width to fit smaller screens */
   }
 
   .stats-inner-container {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: column; /* Stack elements within */
   }
 }
 
 @media (max-width: 655px) {
-  .home-container {
-    width: 100%;
-    margin: 0;
-  }
-
   .stats-container {
     width: 100%;
+    margin: 10px 0;
   }
 
   .stats-weekly-summary {
-    font-size: 18px;
+    font-size: 18px; /* Slightly smaller font for smaller screens */
   }
 }
 
 @media (max-width: 480px) {
-  .home-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 0;
-  }
-
   .stats-container {
     width: 100%;
+    padding: 15px;
   }
 
-  .progress h5,
+  .progress h5, 
   .stats-summary-container h5 {
-    font-size: 16px;
+    font-size: 16px; /* Adjust font size */
   }
 
   .stats-circle-progress {
-    width: 100px;
+    width: 100px; /* Reduce size of circle progress */
   }
 
   .stats-weekly-summary {
-    font-size: 16px;
+    font-size: 16px; /* Further reduce text size */
   }
 }

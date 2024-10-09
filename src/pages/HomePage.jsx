@@ -40,15 +40,13 @@ export default function HomePage() {
 
       <div className="home-container">
         {/* Return daily / week spelling stats */}
-        <div className="daily-stats">
-          <ProgressStats
-            dailyAttemptPercentage={spellingStats.dailyAttemptPercentage}
-            dailyAccuracy={spellingStats.dailyAccuracy}
-            weeklyAttemptPercentage={spellingStats.weeklyAttemptPercentage}
-            weeklyAccuracy={spellingStats.weeklyAccuracy}
-            weeklySummary={weeklySummary}
-          />
-        </div>
+        <ProgressStats
+          dailyAttemptPercentage={spellingStats.dailyAttemptPercentage}
+          dailyAccuracy={spellingStats.dailyAccuracy}
+          weeklyAttemptPercentage={spellingStats.weeklyAttemptPercentage}
+          weeklyAccuracy={spellingStats.weeklyAccuracy}
+          weeklySummary={weeklySummary}
+        />
       </div>
     </>
   );

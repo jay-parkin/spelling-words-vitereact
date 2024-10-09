@@ -14,6 +14,7 @@
     - Maths
     - Sentences
     - Word Search
+    - Blog
 
 #### Profile
 
@@ -68,6 +69,8 @@
 
 - `localhost:3000/word-search`
   - Creates a word search out of this week's spelling words
+
+#### Hangman
 
 #### Personal Blog
 

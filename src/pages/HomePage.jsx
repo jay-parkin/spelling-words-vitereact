@@ -10,6 +10,7 @@ import {
   getWeeklySummary,
 } from "../functions/SpellingSessionUtils";
 import { getWeekNumber } from "../functions/TimeUtils";
+import DadJokes from "../components/DadJokes";
 
 export default function HomePage() {
   const today = new Date().getDay();
@@ -31,12 +32,13 @@ export default function HomePage() {
 
   return (
     <>
-      <h1
-        className="page-title"
-        style={{ textShadow: `2px 2px 5px ${randomColourProperty()}` }}
-      >
-        Welcome to the Home Page
-      </h1>
+      <div className="page-title homepage-title">
+        <h1 style={{ textShadow: `2px 2px 5px ${randomColourProperty()}` }}>
+          Welcome, Jason!
+        </h1>
+
+        <DadJokes />
+      </div>
 
       <div className="home-container">
         {/* Return daily / week spelling stats */}

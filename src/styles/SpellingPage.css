@@ -108,17 +108,14 @@
 
 .spelling-results-body {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin: 20px;
+  flex-wrap: wrap;
+  margin-left: 20px;
+  margin-right: 20px;
 }
-/* 
-.spelling-results-container-outline {
-  padding: 10px;
-  border: 1px solid #8e8e8e56;
-  border-radius: 10px;
-} */
+
 .spelling-results-container {
   width: 600px;
   padding: 20px;
@@ -227,6 +224,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+
+  .spelling-results-container {
+    flex-direction: column;
+    justify-content: flex-start;
   }
 }
 

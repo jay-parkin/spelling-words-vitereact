@@ -50,67 +50,65 @@ export default function SpellingResults(props) {
 
   return (
     <div className="spelling-results-body">
-      <div className="spelling-results-container-outline">
-        <div className="spelling-results-container">
-          <header className="spelling-result-header">Spelling Report</header>
+      <div className="spelling-results-container">
+        <header className="spelling-result-header">Spelling Report</header>
 
-          {/* <div className="spacer"></div> */}
+        {/* <div className="spacer"></div> */}
 
-          <section className="spelling-results-section">
-            <h3>
-              {/* Add a summary from an object of a 
+        <section className="spelling-results-section">
+          <h3>
+            {/* Add a summary from an object of a 
               bunch of different inspiring words.
               Summary must be out of a percent of correct answers*/}
-              Summary: {localStoragePercentage}%
-              <p>{getEncouragingMessage(localStoragePercentage)}</p>
-            </h3>
-          </section>
+            Summary: {localStoragePercentage}%
+            <p>{getEncouragingMessage(localStoragePercentage)}</p>
+          </h3>
+        </section>
 
-          <section className="spelling-results-section">
-            <h3>Overview</h3>
-            <p>Check out the overview of your report</p>
-          </section>
+        <section className="spelling-results-section">
+          <h3>Overview</h3>
+          <p>Check out the overview of your report</p>
+        </section>
 
-          <section>
-            <ul className="spelling-item-list">
-              {localStorageDailyWords.map((currentWord, index) => (
-                <li key={index} className="accordion-item">
-                  <div
-                    onClick={() => handleToggle(index)}
-                    className="accordion-header"
-                  >
-                    <div className="accordion-status">
-                      <strong>{currentWord.word}</strong>
-                      {currentWord.isCorrect ? "Correct" : "Incorrect"}
-                    </div>
-                    <div
-                      className={`accordion-icon ${
-                        openIndex === index ? "open" : ""
-                      }`}
-                    >
-                      <LuChevronDown />
-                    </div>
+        <section>
+          <ul className="spelling-item-list">
+            {localStorageDailyWords.map((currentWord, index) => (
+              <li key={index} className="accordion-item">
+                <div
+                  onClick={() => handleToggle(index)}
+                  className="accordion-header"
+                >
+                  <div className="accordion-status">
+                    <strong>{currentWord.word}</strong>
+                    {currentWord.isCorrect ? "Correct" : "Incorrect"}
                   </div>
-                  {/* Show details if this index is open */}
-                  {openIndex === index && (
-                    <div className="accordion-content">
-                      <p>
-                        {currentWord.isCorrect ? (
-                          "Great job!"
-                        ) : (
-                          <>
-                            Your answer: {currentWord.userInput} <br />
-                            Correct answer: {currentWord.word}
-                          </>
-                        )}
-                      </p>
-                    </div>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </section>
-        </div>
+                  <div
+                    className={`accordion-icon ${
+                      openIndex === index ? "open" : ""
+                    }`}
+                  >
+                    <LuChevronDown />
+                  </div>
+                </div>
+                {/* Show details if this index is open */}
+                {openIndex === index && (
+                  <div className="accordion-content">
+                    <p>
+                      {currentWord.isCorrect ? (
+                        "Great job!"
+                      ) : (
+                        <>
+                          Your answer: {currentWord.userInput} <br />
+                          Correct answer: {currentWord.word}
+                        </>
+                      )}
+                    </p>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
       </div>
     </div>
   );

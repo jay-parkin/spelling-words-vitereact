@@ -1,3 +1,11 @@
+.homepage-title h1 {
+  font-size: 3rem;
+}
+
+.api-dad-jokes {
+  font-size: 1rem;
+}
+
 .home-container {
   display: flex;
   flex-direction: row;
@@ -123,7 +131,7 @@
     padding: 15px;
   }
 
-  .progress h5, 
+  .progress h5,
   .stats-summary-container h5 {
     font-size: 16px; /* Adjust font size */
   }

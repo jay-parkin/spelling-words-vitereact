@@ -93,23 +93,32 @@
 /* Media Queries for Responsive Design */
 @media (max-width: 768px) {
   .home-container {
+    width: 100%;
+    margin: 0;
     flex-direction: column;
     justify-content: flex-start;
   }
 
   .stats-container {
     width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
   }
 
   .stats-inner-container {
     flex-direction: column;
+    align-items: center;
   }
 }
 
 @media (max-width: 655px) {
+  .home-container {
+    width: 100%;
+    margin: 0;
+  }
+
   .stats-container {
     width: 100%;
-    margin: 20px 0;
   }
 
   .stats-weekly-summary {
@@ -118,9 +127,16 @@
 }
 
 @media (max-width: 480px) {
+  .home-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+  }
+
   .stats-container {
     width: 100%;
-    padding: 20px;
   }
 
   .progress h5,

@@ -8,11 +8,13 @@ const DadJokes = () => {
     const fetchJokes = async () => {
       const apiUrl = "https://api.api-ninjas.com/v1/dadjokes?";
 
+      // console.log("API Key:", {import.meta.env.VITE_DAD_JOKES_API});
+
       try {
         const response = await fetch(apiUrl, {
           method: "GET",
           headers: {
-            "X-Api-Key": Config.DAD_JOKES_API,
+            "X-Api-Key": import.meta.env.VITE_DAD_JOKES_API,
           },
         });
 

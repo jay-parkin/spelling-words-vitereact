@@ -3,6 +3,8 @@
   storaging the user's current session
 */
 
+import { getSpellingWordsCount } from "./UserSettings";
+
 export function incrementCurrentWordIndex(userId, weekNumber, dayNumber) {
   // Retrieve the spelling sessions from localStorage
   const spellingSessions = JSON.parse(localStorage.getItem("spellingSessions"));
@@ -249,7 +251,7 @@ function calculateWeeklyAccuracy(weeklySummary) {
   const correctWords = weeklySummary.correctWords;
 
   // Calculate accuracy as a percentage
-  return totalWords === 0 ? 0 : (correctWords / totalWords) * 100;
+  return totalWords === 0 ? 0 : Math.round((correctWords / totalWords) * 100);
 }
 
 function submitDailySummary(dailySummary, isCorrect) {
@@ -258,7 +260,8 @@ function submitDailySummary(dailySummary, isCorrect) {
   const incorrectWords = dailySummary.incorrectWords + (isCorrect ? 0 : 1);
 
   // Calculate accuracy as a percentage
-  const accuracy = totalWords === 0 ? 0 : (correctWords / totalWords) * 100;
+  const accuracy =
+    totalWords === 0 ? 0 : Math.round((correctWords / totalWords) * 100);
 
   return {
     totalWords,
@@ -459,10 +462,11 @@ export function getDailyAttemptedPercent(userId, weekNumber, dayNumber) {
       if (day) {
         // Get the total words for the day
         const totalWords = day.dailySummary.totalWords;
+        const wordListCount = getSpellingWordsCount();
         // Calculate the percentage out of 10 words
-        const percentage = (totalWords / 10) * 100;
+        const percentage = (totalWords / wordListCount) * 100;
         // Return the percentage, capped at 100%
-        return Math.min(percentage, 100);
+        return Math.min(Math.round(percentage, 100));
       }
     }
   }
@@ -471,7 +475,7 @@ export function getDailyAttemptedPercent(userId, weekNumber, dayNumber) {
   return [];
 }
 
-export function getWeeklyAttemptedPercent(userId, weekNumber) {
+export function getWeeklyAttemptedPercent(userId, weekNumber, dayNumber) {
   // Retrieve the spelling sessions from localStorage
   const spellingSessions = JSON.parse(localStorage.getItem("spellingSessions"));
 
@@ -490,14 +494,17 @@ export function getWeeklyAttemptedPercent(userId, weekNumber) {
   if (userSession) {
     // Access the specified week
     const week = userSession.weeks[weekNumber];
+    const wordListLength = week.wordList.length;
+    const totalWordsThisWeek = wordListLength * dayNumber;
 
     if (week) {
       // Get the total words for the week
       const totalWords = week.weeklySummary.totalWords;
+
       // Calculate the percentage out of 10 words
-      const percentage = (totalWords / 10) * 100;
+      const percentage = (totalWords / totalWordsThisWeek) * 100;
       // Return the percentage, capped at 100%
-      return Math.min(percentage, 100);
+      return Math.min(Math.round(percentage, 100));
     }
   }
 

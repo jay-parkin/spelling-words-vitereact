@@ -20,7 +20,7 @@ export default function HomePage() {
   const spellingStats = {
     dailyAttemptPercentage: getDailyAttemptedPercent(USER_ID, week, today),
     dailyAccuracy: getDailyAccuracy(USER_ID, week, today),
-    weeklyAttemptPercentage: getWeeklyAttemptedPercent(USER_ID, week),
+    weeklyAttemptPercentage: getWeeklyAttemptedPercent(USER_ID, week, today),
     weeklyAccuracy: getWeeklyAccuracy(USER_ID, week),
   };
 

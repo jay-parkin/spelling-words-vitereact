@@ -162,7 +162,7 @@ export function saveToDailyWordList(
   // Check if spellingSessions exists and is not null
   if (!spellingSessions) {
     console.error("No spelling sessions found.");
-    return;
+    return [];
   }
 
   // Find the user's session
@@ -275,7 +275,7 @@ export function getDailyAccuracy(userId, weekNumber, dayNumber) {
   // Check if spellingSessions exists and is not null
   if (!spellingSessions) {
     console.error("No spelling sessions found.");
-    return;
+    return [];
   }
 
   // Find the user's session
@@ -308,7 +308,7 @@ export function getWeeklyAccuracy(userId, weekNumber) {
   // Check if spellingSessions exists and is not null
   if (!spellingSessions) {
     console.error("No spelling sessions found.");
-    return;
+    return [];
   }
 
   // Find the user's session
@@ -326,7 +326,7 @@ export function getWeeklyAccuracy(userId, weekNumber) {
       return week.weeklySummary.accuracy;
     }
   }
-  return null;
+  return [];
 }
 
 export function initialiseSpellingSession(userId) {
@@ -439,7 +439,7 @@ export function getDailyAttemptedPercent(userId, weekNumber, dayNumber) {
   // Check if spellingSessions exists and is not null
   if (!spellingSessions) {
     console.error("No spelling sessions found.");
-    return null; // Return null if no sessions exist
+    return []; // Return null if no sessions exist
   }
 
   // Find the user's session
@@ -468,7 +468,7 @@ export function getDailyAttemptedPercent(userId, weekNumber, dayNumber) {
   }
 
   // Return null if no valid data was found
-  return null;
+  return [];
 }
 
 export function getWeeklyAttemptedPercent(userId, weekNumber) {
@@ -478,7 +478,7 @@ export function getWeeklyAttemptedPercent(userId, weekNumber) {
   // Check if spellingSessions exists and is not null
   if (!spellingSessions) {
     console.error("No spelling sessions found.");
-    return null; // Return null if no sessions exist
+    return []; // Return null if no sessions exist
   }
 
   // Find the user's session
@@ -502,7 +502,7 @@ export function getWeeklyAttemptedPercent(userId, weekNumber) {
   }
 
   // Return null if no valid data was found
-  return null;
+  return [];
 }
 
 export function getWeeklySummary(userId, weekNumber) {
@@ -512,7 +512,7 @@ export function getWeeklySummary(userId, weekNumber) {
   // Check if spellingSessions exists and is not null
   if (!spellingSessions) {
     console.error("No spelling sessions found.");
-    return;
+    return [];
   }
 
   // Find the user's session
@@ -530,5 +530,5 @@ export function getWeeklySummary(userId, weekNumber) {
       return week.weeklySummary;
     }
   }
-  return null;
+  return [];
 }

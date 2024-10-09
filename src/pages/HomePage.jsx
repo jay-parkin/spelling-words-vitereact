@@ -35,7 +35,7 @@ export default function HomePage() {
         className="page-title"
         style={{ textShadow: `2px 2px 5px ${randomColourProperty()}` }}
       >
-        {/* Welcome to the Home Page */}
+        Welcome to the Home Page
       </h1>
 
       <div className="home-container">

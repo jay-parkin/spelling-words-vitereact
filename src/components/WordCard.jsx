@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { BiBook } from "react-icons/bi";
-import { BiChevronLeft } from "react-icons/bi";
+import TextToSpeech from "./TextToSpeech";
 
 /**
  * header
@@ -95,8 +94,7 @@ export default function WordCard(props) {
           backgroundColor: localColourProperty,
         }}
       >
-        <BiBook size={40} color="white" />
-        <BiChevronLeft size={20} color="white" />
+        <TextToSpeech text={definition} />
       </div>
       <div className="spelling-card-body">
         <div className="spelling-card-text">

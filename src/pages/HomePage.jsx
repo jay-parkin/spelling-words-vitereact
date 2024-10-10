@@ -38,7 +38,7 @@ export default function HomePage() {
           Welcome, Jason!
         </h1>
 
-        {/* <DadJokes /> */}
+        <DadJokes />
       </div>
 
       <div className="home-container">

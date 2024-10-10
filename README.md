@@ -89,6 +89,14 @@
 
 - Netlify env variables: https://docs.netlify.com/environment-variables/overview/
 
+## API Reference
+
+- https://api-ninjas.com/api/dadjokes
+
+  #### Description
+
+  The Dad Jokes API provides thousands of hilarious dad jokes for your entertainment apps
+
 ## Useful Resources
 
 ## Context

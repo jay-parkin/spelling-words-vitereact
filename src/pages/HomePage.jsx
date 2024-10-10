@@ -11,6 +11,7 @@ import {
 } from "../functions/SpellingSessionUtils";
 import { getWeekNumber } from "../functions/TimeUtils";
 import DadJokes from "../components/DadJokes";
+import TextToSpeech from "../components/TextToSpeech";
 
 export default function HomePage() {
   const today = new Date().getDay();
@@ -37,7 +38,7 @@ export default function HomePage() {
           Welcome, Jason!
         </h1>
 
-        <DadJokes />
+        {/* <DadJokes /> */}
       </div>
 
       <div className="home-container">
@@ -48,6 +49,14 @@ export default function HomePage() {
           weeklyAttemptPercentage={spellingStats.weeklyAttemptPercentage}
           weeklyAccuracy={spellingStats.weeklyAccuracy}
           weeklySummary={weeklySummary}
+        />
+      </div>
+
+      <div>
+        <TextToSpeech
+          text={
+            "To add controls for changing the voice, speed, and pitch of the speech synthesis, we can create new state variables for each of these properties in our TextToSpeech component. We can then add input elements to allow the user to adjust these properties."
+          }
         />
       </div>
     </>

@@ -494,10 +494,11 @@ export function getWeeklyAttemptedPercent(userId, weekNumber, dayNumber) {
   if (userSession) {
     // Access the specified week
     const week = userSession.weeks[weekNumber];
-    const wordListLength = week.wordList.length;
-    const totalWordsThisWeek = wordListLength * dayNumber;
 
     if (week) {
+      const wordListLength = week.wordList.length ? week.wordList.length : 0;
+      const totalWordsThisWeek = wordListLength * dayNumber;
+
       // Get the total words for the week
       const totalWords = week.weeklySummary.totalWords;
 

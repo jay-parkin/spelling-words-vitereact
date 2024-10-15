@@ -3,5 +3,5 @@ export default function getUserId() {
 }
 
 export function getSpellingWordsCount() {
-  return 10;
+  return 20;
 }

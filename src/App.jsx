@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 import HomePage from "./pages/HomePage";
 import SpellingPage from "./pages/SpellingPage";
 import MathsPage from "./pages/MathsPage";
@@ -7,6 +8,7 @@ import WordSearchPage from "./pages/WordSearchPage";
 import Navbar from "./components/Navbar";
 import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
+import AuthPage from "./pages/AuthPage";
 
 const journalRouter = createBrowserRouter([
   {
@@ -69,6 +71,14 @@ const journalRouter = createBrowserRouter([
       <>
         <Navbar />
         <SettingsPage />
+      </>
+    ),
+  },
+  {
+    path: "/auth",
+    element: (
+      <>
+        <AuthPage />
       </>
     ),
   },

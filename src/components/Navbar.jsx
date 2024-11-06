@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 
-
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -58,7 +57,7 @@ const Navbar = () => {
       <div className="nav-right">
         <ul className="profile-link">
           <li>
-            <NavLink to="/profile" onClick={() => setIsOpen(false)}>
+            <NavLink to="/auth" onClick={() => setIsOpen(false)}>
               Profile
             </NavLink>
           </li>

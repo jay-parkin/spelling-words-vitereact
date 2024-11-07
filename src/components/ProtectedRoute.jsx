@@ -18,7 +18,7 @@ export default function ProtectedRoute({ children }) {
 
     try {
       const response = await fetch(
-        `${process.env.DATABASE_URL}/protectedRoute`,
+        `${import.meta.env.VITE_DATABASE_URL}/protectedRoute`,
         {
           method: "GET",
           headers: {

@@ -17,13 +17,16 @@ export default function ProtectedRoute({ children }) {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/protectedRoute", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Use Authorization header
-        },
-      });
+      const response = await fetch(
+        `${process.env.DATABASE_URL}/protectedRoute`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Use Authorization header
+          },
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();

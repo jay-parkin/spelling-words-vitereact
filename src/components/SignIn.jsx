@@ -25,7 +25,7 @@ export default function SignInForm() {
     setStatus("");
 
     try {
-      const response = await fetch("http://localhost:8080/signin", {
+      const response = await fetch(`${process.env.DATABASE_URL}/signin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

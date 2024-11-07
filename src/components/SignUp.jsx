@@ -27,7 +27,7 @@ export default function SignUpForm() {
     setStatus("");
 
     try {
-      const response = await fetch(`http://localhost:8080/signup`, {
+      const response = await fetch(`${process.env.DATABASE_URL}/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, gamertag, password }),

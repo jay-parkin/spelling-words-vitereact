@@ -10,8 +10,6 @@ import "./styles/Navbar.css";
 import "./styles/AuthPage.css";
 import "./styles/PasswordContainer.css";
 
-fixing password css
-
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Header />

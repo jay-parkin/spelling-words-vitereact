@@ -15,23 +15,19 @@ const journalRouter = createBrowserRouter([
   {
     path: "/",
     element: (
-      <ProtectedRoute>
-        <>
-          <Navbar />
-          <HomePage />
-        </>
-      </ProtectedRoute>
+      <>
+        <Navbar />
+        <HomePage />
+      </>
     ),
   },
   {
     path: "/spelling",
     element: (
-      <ProtectedRoute>
-        <>
-          <Navbar />
-          <SpellingPage />
-        </>
-      </ProtectedRoute>
+      <>
+        <Navbar />
+        <SpellingPage />
+      </>
     ),
   },
   {

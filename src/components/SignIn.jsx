@@ -73,7 +73,7 @@ export default function SignInForm() {
         <button type="submit" disabled={isLoading}>
           {isLoading ? "Signing In..." : "Sign In"}
         </button>
-        {error && <p className="error">{error}</p>} {/* Display error if any */}
+        {error && <p className="error">{error}</p>}
       </form>
     </div>
   );

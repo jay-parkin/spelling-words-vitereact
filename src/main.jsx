@@ -11,7 +11,7 @@ import "./styles/AuthPage.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Header />
-    <App />
+      <Header />
+      <App />
   </StrictMode>
 );

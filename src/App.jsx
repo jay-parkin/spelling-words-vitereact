@@ -9,69 +9,84 @@ import Navbar from "./components/Navbar";
 import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
 import AuthPage from "./pages/AuthPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const journalRouter = createBrowserRouter([
   {
     path: "/",
     element: (
-      <>
-        <Navbar />
-        <HomePage />
-      </>
+      <ProtectedRoute>
+        <>
+          <Navbar />
+          <HomePage />
+        </>
+      </ProtectedRoute>
     ),
   },
   {
     path: "/spelling",
     element: (
-      <>
-        <Navbar />
-        <SpellingPage />
-      </>
+      <ProtectedRoute>
+        <>
+          <Navbar />
+          <SpellingPage />
+        </>
+      </ProtectedRoute>
     ),
   },
   {
     path: "/maths",
     element: (
-      <>
-        <Navbar />
-        <MathsPage />
-      </>
+      <ProtectedRoute>
+        <>
+          <Navbar />
+          <MathsPage />
+        </>
+      </ProtectedRoute>
     ),
   },
   {
     path: "/sentences",
     element: (
-      <>
-        <Navbar />
-        <SentencesPage />
-      </>
+      <ProtectedRoute>
+        <>
+          <Navbar />
+          <SentencesPage />
+        </>
+      </ProtectedRoute>
     ),
   },
   {
     path: "/word-search",
     element: (
-      <>
-        <Navbar />
-        <WordSearchPage />
-      </>
+      <ProtectedRoute>
+        <>
+          <Navbar />
+          <WordSearchPage />
+        </>
+      </ProtectedRoute>
     ),
   },
   {
     path: "/profile",
     element: (
-      <>
-        <Navbar />
-        <ProfilePage />
-      </>
+      <ProtectedRoute>
+        <>
+          <Navbar />
+          <ProfilePage />
+        </>
+      </ProtectedRoute>
     ),
   },
   {
     path: "/settings",
     element: (
-      <>
-        <Navbar />
-        <SettingsPage />
-      </>
+      <ProtectedRoute>
+        <>
+          <Navbar />
+          <SettingsPage />
+        </>
+      </ProtectedRoute>
     ),
   },
   {

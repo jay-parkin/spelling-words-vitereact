@@ -4,7 +4,7 @@ export default function SignUpForm() {
   const [name, setName] = useState("");
   const [gamertag, setGamertag] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [status, setStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -21,7 +21,7 @@ export default function SignUpForm() {
   const handleOnSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setError("");
+    setStatus("");
 
     try {
       const response = await fetch(`http://localhost:8080/signup`, {
@@ -34,17 +34,17 @@ export default function SignUpForm() {
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
-        alert("Sign-up successful");
+        setStatus("Sign-up successful");
 
         // Clear the input fields after successful sign up
         setName("");
         setGamertag("");
         setPassword("");
       } else {
-        setError(data.message);
+        setStatus(data.message);
       }
     } catch (err) {
-      setError("Error connecting to the server");
+      setStatus("Error connecting to the server");
     } finally {
       setIsLoading(false);
     }
@@ -77,6 +77,7 @@ export default function SignUpForm() {
           placeholder="Password"
         />
         <button>Sign Up</button>
+        {status && <p className="status">{status}</p>}
       </form>
     </div>
   );

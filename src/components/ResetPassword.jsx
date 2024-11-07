@@ -16,13 +16,16 @@ export default function ResetPassword() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const response = await fetch("http://localhost:8080/reset-password", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ token, password }),
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_DATABASE_URL}/reset-password`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token, password }),
+      }
+    );
 
     if (response.ok) {
       setMessage("Your password has been reset successfully.");

@@ -14,7 +14,7 @@ export default function ForgotPassword() {
     try {
       // Send a request to the backend to send the reset email
       const response = await fetch(
-        "http://localhost:8080/request-password-reset",
+        `${import.meta.env.VITE_DATABASE_URL}/request-password-reset`,
         {
           method: "POST",
           headers: {

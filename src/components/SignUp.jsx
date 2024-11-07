@@ -25,13 +25,16 @@ export default function SignUpForm() {
     e.preventDefault();
     setIsLoading(true);
     setStatus("");
-
+    console.log(`connecting: ${import.meta.env.VITE_DATABASE_URL}`);
     try {
-      const response = await fetch(`${process.env.DATABASE_URL}/signup`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, gamertag, password }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_DATABASE_URL}/signup`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, gamertag, password }),
+        }
+      );
 
       const data = await response.json();
 

@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
-const ResetPassword = () => {
+export default function ResetPassword() {
   const { token } = useParams(); // Get the token from the URL
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Optionally, verify token on page load (e.g., check if it's expired or valid)
+    // Optionally, you can verify the token on page load,
+    // or perform any other necessary checks.
   }, [token]);
 
   const handleSubmit = async (event) => {
@@ -23,6 +26,9 @@ const ResetPassword = () => {
 
     if (response.ok) {
       setMessage("Your password has been reset successfully.");
+
+      localStorage.removeItem("jwt");
+      navigate("/");
     } else {
       setMessage("Error resetting password.");
     }
@@ -43,6 +49,4 @@ const ResetPassword = () => {
       {message && <p>{message}</p>}
     </form>
   );
-};
-
-export default ResetPassword;
+}

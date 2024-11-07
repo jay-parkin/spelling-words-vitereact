@@ -10,24 +10,30 @@ import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
 import AuthPage from "./pages/AuthPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 
 const journalRouter = createBrowserRouter([
   {
     path: "/",
     element: (
-      <>
-        <Navbar />
-        <HomePage />
-      </>
+      <ProtectedRoute>
+        <>
+          <Navbar />
+          <HomePage />
+        </>
+      </ProtectedRoute>
     ),
   },
   {
     path: "/spelling",
     element: (
-      <>
-        <Navbar />
-        <SpellingPage />
-      </>
+      <ProtectedRoute>
+        <>
+          <Navbar />
+          <SpellingPage />
+        </>
+      </ProtectedRoute>
     ),
   },
   {
@@ -90,6 +96,22 @@ const journalRouter = createBrowserRouter([
     element: (
       <>
         <AuthPage />
+      </>
+    ),
+  },
+  {
+    path: "/forgot-password",
+    element: (
+      <>
+        <ForgotPasswordPage />
+      </>
+    ),
+  },
+  {
+    path: "/reset-password/:token",
+    element: (
+      <>
+        <ResetPasswordPage />
       </>
     ),
   },

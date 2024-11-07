@@ -5,7 +5,7 @@ export default function SignInForm() {
   const [name, setName] = useState("");
   const [gamertag, setGamertag] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [status, setStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ export default function SignInForm() {
     e.preventDefault();
 
     setIsLoading(true); // set loading animation
-    setError("");
+    setStatus("");
 
     try {
       const response = await fetch("http://localhost:8080/signin", {
@@ -41,10 +41,10 @@ export default function SignInForm() {
         // Redirect to the homepage after sign-in
         navigate("/");
       } else {
-        setError(data.message);
+        setStatus(data.message);
       }
     } catch (err) {
-      setError("Error connecting to the server");
+      setStatus("Error connecting to the server");
     } finally {
       setIsLoading(false);
     }
@@ -69,11 +69,11 @@ export default function SignInForm() {
           value={password}
           onChange={handleChange}
         />
-        <a href="#">Forgot your password?</a>
+        <a href="/forgot-password">Forgot your password?</a>
         <button type="submit" disabled={isLoading}>
           {isLoading ? "Signing In..." : "Sign In"}
         </button>
-        {error && <p className="error">{error}</p>}
+        {status && <p className="status">{status}</p>}
       </form>
     </div>
   );

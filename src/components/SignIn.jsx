@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function SignInForm() {
   const [name, setName] = useState("");
@@ -25,13 +25,16 @@ export default function SignInForm() {
     setStatus("");
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_DATABASE_URL}/signin`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ gamertag, password }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_DATABASE_URL}/signin`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ gamertag, password }),
+        }
+      );
 
       const data = await response.json();
 
@@ -69,7 +72,7 @@ export default function SignInForm() {
           value={password}
           onChange={handleChange}
         />
-        <a href="/forgot-password">Forgot your password?</a>
+        <Link to="/forgot-password">Forgot your password?</Link>
         <button type="submit" disabled={isLoading}>
           {isLoading ? "Signing In..." : "Sign In"}
         </button>

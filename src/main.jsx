@@ -12,7 +12,6 @@ import "./styles/PasswordContainer.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Header />
     <App />
   </StrictMode>
 );

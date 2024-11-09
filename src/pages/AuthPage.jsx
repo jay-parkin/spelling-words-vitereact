@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SignInForm from "../components/SignIn";
 import SignUpForm from "../components/SignUp";
 
 export default function AuthPage() {
   const [type, setType] = useState("signIn");
+
+  useEffect(() => {
+    localStorage.removeItem("jwt");
+  });
+
   const handleOnClick = (text) => {
     if (text !== type) {
       setType(text);

@@ -33,7 +33,7 @@ export default function ProtectedRoute({ children }) {
         console.log("Protected data:", data.message);
       } else {
         setError("Token is invalid or expired. Please sign in again.");
-        localStorage.removeItem("jwt"); // Optionally remove token if invalid
+        localStorage.removeItem("jwt"); 
         navigate("/auth"); // Redirect to sign-in page
       }
     } catch (error) {

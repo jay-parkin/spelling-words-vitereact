@@ -1,124 +1,48 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
+// App.jsx
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ProtectedLayout from "./components/ProtectedLayout";
 import HomePage from "./pages/HomePage";
 import SpellingPage from "./pages/SpellingPage";
 import MathsPage from "./pages/MathsPage";
 import SentencesPage from "./pages/SentencesPage";
 import WordSearchPage from "./pages/WordSearchPage";
-import Navbar from "./components/Navbar";
 import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
 import AuthPage from "./pages/AuthPage";
-import ProtectedRoute from "./components/ProtectedRoute";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-
-const journalRouter = createBrowserRouter([
-  {
-    path: "/",
-    element: (
-      <ProtectedRoute>
-        <>
-          <Navbar />
-          <HomePage />
-        </>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/spelling",
-    element: (
-      <ProtectedRoute>
-        <>
-          <Navbar />
-          <SpellingPage />
-        </>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/maths",
-    element: (
-      <ProtectedRoute>
-        <>
-          <Navbar />
-          <MathsPage />
-        </>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/sentences",
-    element: (
-      <ProtectedRoute>
-        <>
-          <Navbar />
-          <SentencesPage />
-        </>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/word-search",
-    element: (
-      <ProtectedRoute>
-        <>
-          <Navbar />
-          <WordSearchPage />
-        </>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/profile",
-    element: (
-      <ProtectedRoute>
-        <>
-          <Navbar />
-          <ProfilePage />
-        </>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/settings",
-    element: (
-      <ProtectedRoute>
-        <>
-          <Navbar />
-          <SettingsPage />
-        </>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/auth",
-    element: (
-      <>
-        <AuthPage />
-      </>
-    ),
-  },
-  {
-    path: "/forgot-password",
-    element: (
-      <>
-        <ForgotPasswordPage />
-      </>
-    ),
-  },
-  {
-    path: "/reset-password/:token",
-    element: (
-      <>
-        <ResetPasswordPage />
-      </>
-    ),
-  },
-]);
+import ProtectedRoute from "./components/ProtectedRoute";
+import Header from "./components/Header";
 
 function App() {
-  return <RouterProvider router={journalRouter} />;
+  return (
+    <BrowserRouter>
+      {" "}
+      {/* Use BrowserRouter instead */}
+      <Header /> {/* Header is shown on all routes */}
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <ProtectedLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<HomePage />} />
+          <Route path="spelling" element={<SpellingPage />} />
+          <Route path="maths" element={<MathsPage />} />
+          <Route path="sentences" element={<SentencesPage />} />
+          <Route path="word-search" element={<WordSearchPage />} />
+          <Route path="profile" element={<ProfilePage />} />
+          <Route path="settings" element={<SettingsPage />} />
+        </Route>
+        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;

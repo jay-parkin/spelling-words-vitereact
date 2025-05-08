@@ -28,7 +28,7 @@ export default function SignUpForm() {
     console.log(`connecting: ${import.meta.env.VITE_DATABASE_URL}`);
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_DATABASE_URL}/signup`,
+        `${import.meta.env.VITE_DATABASE_URL}/register`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

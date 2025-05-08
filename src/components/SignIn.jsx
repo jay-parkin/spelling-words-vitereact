@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 
 export default function SignInForm() {
   const [name, setName] = useState("");
-  const [gamertag, setGamertag] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -11,8 +11,8 @@ export default function SignInForm() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "gamertag") {
-      setGamertag(value);
+    if (name === "username") {
+      setUsername(value);
     } else if (name === "password") {
       setPassword(value);
     }
@@ -32,7 +32,7 @@ export default function SignInForm() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ gamertag, password }),
+          body: JSON.stringify({ username, password }),
         }
       );
 
@@ -57,12 +57,12 @@ export default function SignInForm() {
     <div className="form-container sign-in-container">
       <form onSubmit={handleOnSubmit}>
         <h1>Sign in</h1>
-        <span>or use your account</span>
+        <span>or create a new account</span>
         <input
           type="text"
-          name="gamertag"
-          placeholder="Gamertag"
-          value={gamertag}
+          name="username"
+          placeholder="username"
+          value={username}
           onChange={handleChange}
         />
         <input

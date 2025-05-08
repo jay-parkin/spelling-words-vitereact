@@ -3,7 +3,7 @@ import React, { useState } from "react";
 export default function SignUpForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [gamertag, setGamertag] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -14,8 +14,8 @@ export default function SignUpForm() {
       setName(value); // Update the `name` state
     } else if (name === "email") {
       setEmail(value); // Update the `email` state
-    } else if (name === "gamertag") {
-      setGamertag(value); // Update the `gamerTag` state
+    } else if (name === "username") {
+      setUsername(value); // Update the `username` state
     } else if (name === "password") {
       setPassword(value); // Update the `password` state
     }
@@ -32,7 +32,7 @@ export default function SignUpForm() {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, email, gamertag, password }),
+          body: JSON.stringify({ name, email, username, password }),
         }
       );
 
@@ -45,7 +45,7 @@ export default function SignUpForm() {
         // Clear the input fields after successful sign up
         setName("");
         setEmail("");
-        setGamertag("");
+        setUsername("");
         setPassword("");
       } else {
         setStatus(data.message);
@@ -61,7 +61,7 @@ export default function SignUpForm() {
     <div className="form-container sign-up-container">
       <form onSubmit={handleOnSubmit}>
         <h1>Create Account</h1>
-        <span>or use your gamertag for registration</span>
+        <span>or use your username to sign in</span>
         <input
           type="text"
           name="name"
@@ -70,18 +70,18 @@ export default function SignUpForm() {
           placeholder="Name"
         />
         <input
+          type="text"
+          name="username"
+          value={username}
+          onChange={handleChange}
+          placeholder="Username"
+        />
+        <input
           type="email"
           name="email"
           value={email}
           onChange={handleChange}
           placeholder="Email"
-        />
-        <input
-          type="text"
-          name="gamertag"
-          value={gamertag}
-          onChange={handleChange}
-          placeholder="Gamer Tag"
         />
         <input
           type="password"

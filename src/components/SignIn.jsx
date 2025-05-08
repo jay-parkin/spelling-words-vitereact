@@ -26,7 +26,7 @@ export default function SignInForm() {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_DATABASE_URL}/signin`,
+        `${import.meta.env.VITE_DATABASE_URL}/login`,
         {
           method: "POST",
           headers: {

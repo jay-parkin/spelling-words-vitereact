@@ -61,7 +61,7 @@ export default function SignInForm() {
         <input
           type="text"
           name="username"
-          placeholder="username"
+          placeholder="Username"
           value={username}
           onChange={handleChange}
         />

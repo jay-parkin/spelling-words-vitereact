@@ -33,7 +33,7 @@ export default function ProgressStats(props) {
           <div className="stats-inner-container">
             <div className="stats-progress-container">
               <h5>Weekly Words Attempted</h5>
-              <ProgressProvider
+              {/* <ProgressProvider
                 valueStart={0}
                 valueEnd={weeklyAttemptPercentage}
               >
@@ -47,7 +47,7 @@ export default function ProgressStats(props) {
                     ballStrokeWidth={20}
                   />
                 )}
-              </ProgressProvider>
+              </ProgressProvider> */}
             </div>
 
             <div className="stats-progress-container">

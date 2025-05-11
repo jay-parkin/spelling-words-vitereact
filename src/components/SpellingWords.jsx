@@ -1,123 +1,146 @@
 import React, { useState, useEffect } from "react";
 import WordCard from "./WordCard";
 import SpellingResults from "./SpellingResults";
-
-import {
-  incrementCurrentWordIndex,
-  getCurentWordIndex,
-  initialiseSpellingSession,
-  addWeekAndDay,
-  getWeekWordList,
-  saveToDailyWordList,
-} from "../functions/SpellingSessionUtils";
-import wordSet from "../data/WordsList";
-
 import randomColourProperty from "../functions/RandomColourProperty";
 import { getWeekNumber } from "../functions/TimeUtils.js";
-import getUserId, { getSpellingWordsCount } from "../functions/UserSettings.js";
 
-// when the first opens the spelling they set a session with a date.
-// - any time the user comes back, the date is checked.
-// 	- if date exists continue the same sessions,
-// 	- if not date for today, starts a new session.
+import { useUser } from "../contexts/UserContext";
 
-function getRandomWords(wordSet, count = getSpellingWordsCount()) {
-  const words = Object.keys(wordSet);
-
-  // Shuffle the words array
-  for (let i = words.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [words[i], words[j]] = [words[j], words[i]];
-  }
-
-  // Select the first 'count' words and map them to an array of objects
-  return words.slice(0, count + 1).map((word) => ({
-    word,
-    definition: wordSet[word],
-    incorrectAttempt: 0,
-    correctAttempt: 0,
-  }));
-}
-
-export default function SpellingWords({ userId }) {
-  // Get week and day for localstorage name
+export default function SpellingWords() {
   const today = new Date().getDay();
   const week = getWeekNumber(new Date());
+  const { user } = useUser();
 
-  const [localCurrentWordIndex, setLocalCurrentWordIndex] = useState(0);
   const [weeklyWordList, setWordList] = useState([]);
-  const [USER_ID] = useState(getUserId());
+  const [wordStatuses, setWordStatuses] = useState([]);
+  const [localCurrentWordIndex, setLocalCurrentWordIndex] = useState(0);
 
-  // Check or initialise user session
+  // Step 1: Initialize spelling session
   useEffect(() => {
-    initialiseSpellingSession(USER_ID);
-    const storedWordList = getWeekWordList(USER_ID, week);
+    if (!user?.userId) return;
 
-    // Check if the word list exists and if the week is the same
-    if (storedWordList.length === 0) {
-      const initialWordList = getRandomWords(wordSet);
-      addWeekAndDay(USER_ID, week, today, initialWordList);
+    const initSession = async () => {
+      try {
+        const url = `${import.meta.env.VITE_DATABASE_URL}/spelling/init`;
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user?.userId,
+            weekNumber: week,
+          }),
+        });
 
-      // Set the word list in state
-      setWordList(initialWordList);
-    } else {
-      // Load the existing word list
-      setWordList(storedWordList);
+        if (!response.ok) throw new Error("Failed to init session");
+
+        const data = await response.json();
+        const wordList =
+          data.session.weeks.find((w) => w.weekNumber === week)?.wordList || [];
+
+        setWordList(wordList);
+      } catch (error) {
+        console.error("Init error:", error);
+      }
+    };
+
+    initSession();
+  }, [user, week]);
+
+  // Step 2: Fetch daily word statuses from backend
+  useEffect(() => {
+    if (weeklyWordList.length === 0 || !user?.userId) return;
+
+    const fetchWordStatus = async () => {
+      try {
+        const url = `${import.meta.env.VITE_DATABASE_URL}/spelling/${
+          user?.userId
+        }/week/${week}/day/${today}/status`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Failed to fetch word statuses");
+
+        const data = await response.json();
+        setWordStatuses(data.wordStatuses);
+
+        const nextIndex =
+          data.wordStatuses.find((w) => !w.isCorrect)?.index ??
+          weeklyWordList.length;
+
+        if (nextIndex !== localCurrentWordIndex) {
+          setLocalCurrentWordIndex(nextIndex);
+        }
+      } catch (error) {
+        console.error("Status fetch error:", error);
+      }
+    };
+
+    fetchWordStatus();
+  }, [user?.userId, weeklyWordList]);
+
+  // Step 3: Attempt handler (send to backend + update status)
+  const handleAttempt = async (userInput) => {
+    const currentWordData = weeklyWordList[localCurrentWordIndex];
+    const isCorrect =
+      userInput.trim().toLowerCase() === currentWordData.word.toLowerCase();
+
+    try {
+      const url = `${import.meta.env.VITE_DATABASE_URL}/spelling/attempt`;
+      await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user?.userId,
+          weekNumber: week,
+          day: today,
+          wordIndex: localCurrentWordIndex,
+          userInput,
+          isCorrect,
+        }),
+      });
+
+      if (isCorrect) {
+        setWordStatuses((prev) =>
+          prev.map((entry) =>
+            entry.index === localCurrentWordIndex
+              ? { ...entry, isCorrect: true }
+              : entry
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Attempt submit error:", error);
+    }
+  };
+
+  // Step 4: Move to next incomplete word
+  const handleNextWord = () => {
+    for (let i = 1; i <= weeklyWordList.length; i++) {
+      const nextIndex = (localCurrentWordIndex + i) % weeklyWordList.length;
+      if (!wordStatuses[nextIndex]?.isCorrect) {
+        setLocalCurrentWordIndex(nextIndex);
+        return;
+      }
     }
 
-    // make sure the wordlist is created
-    addWeekAndDay(USER_ID, week, today, storedWordList);
-  }, [today, week]);
-
-  useEffect(() => {
-    const currentWordIndex = getCurentWordIndex(USER_ID, week, today);
-    setLocalCurrentWordIndex(currentWordIndex);
-  }, [weeklyWordList]);
-
-  const handleNextWord = () => {
-    incrementCurrentWordIndex(USER_ID, week, today);
-    setLocalCurrentWordIndex(getCurentWordIndex(USER_ID, week, today));
+    // All correct
+    setLocalCurrentWordIndex(weeklyWordList.length);
   };
 
-  const handleAttempt = (userInput) => {
-    // Get the current word and its definition
-    const currentWordData = getWeekWordList(USER_ID, week)[
-      localCurrentWordIndex
-    ];
+  // Step 5: Check if session is complete
+  const allCorrect =
+    wordStatuses.length > 0 && wordStatuses.every((w) => w.isCorrect);
 
-    const word = currentWordData.word;
-    const definition = currentWordData.definition;
-
-    // Check if the user's input is correct
-    const isCorrect = userInput.trim().toLowerCase() === word.toLowerCase();
-
-    // Call the function to save attempts and word information
-    saveToDailyWordList(
-      USER_ID,
-      week,
-      today,
-      word,
-      definition,
-      userInput,
-      isCorrect
-    );
-  };
-
-  // Render Results if all words are completed
-  if (
-    weeklyWordList.length > 0 &&
-    localCurrentWordIndex === weeklyWordList.length - 1
-  ) {
+  if (allCorrect) {
     return (
-      <>
-        <SpellingResults userId={USER_ID} weekNumber={week} dayNumber={today} />
-      </>
+      <SpellingResults
+        userId={user?.userId}
+        weekNumber={week}
+        dayNumber={today}
+      />
     );
   }
 
   return (
     <section className="spelling-body">
-      {/* Display the current word */}
       {weeklyWordList.length > 0 &&
       localCurrentWordIndex < weeklyWordList.length ? (
         <WordCard
@@ -128,7 +151,7 @@ export default function SpellingWords({ userId }) {
           designColour={randomColourProperty}
         />
       ) : (
-        <p>All words completed!</p>
+        <p>All words completed or loading...</p>
       )}
     </section>
   );

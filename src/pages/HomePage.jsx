@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import ProgressStats from "../components/ProgressStats";
 import randomColourProperty from "../functions/RandomColourProperty";
 
+import { useUser } from "../contexts/UserContext";
+
 import {
   getDailyAccuracy,
   getWeeklyAccuracy,
@@ -9,15 +11,15 @@ import {
   getWeeklyAttemptedPercent,
   getWeeklySummary,
 } from "../functions/SpellingSessionUtils";
+
 import { getWeekNumber } from "../functions/TimeUtils";
 import DadJokes from "../components/DadJokes";
-import TextToSpeech from "../components/TextToSpeech";
 
 export default function HomePage() {
   const today = new Date().getDay();
   const week = getWeekNumber(new Date());
-
-  const USER_ID = "4b1fcc21-9598-49ac-a6ec-06ebfc08f7ad";
+  const { user } = useUser();
+  const [USER_ID] = useState(user.id);
 
   const spellingStats = {
     dailyAttemptPercentage: getDailyAttemptedPercent(USER_ID, week, today),
@@ -26,16 +28,16 @@ export default function HomePage() {
     weeklyAccuracy: getWeeklyAccuracy(USER_ID, week),
   };
 
-  const [weeklySummary, setWeeklySumarry] = useState([]);
+  const [weeklySummary, setWeeklySummary] = useState([]);
   useEffect(() => {
-    setWeeklySumarry(getWeeklySummary(USER_ID, week));
+    setWeeklySummary(getWeeklySummary(USER_ID, week));
   }, []);
 
   return (
     <>
       <div className="page-title homepage-title">
-        <h1 style={{ textShadow: `2px 2px 5px ${randomColourProperty()}` }}>
-          Welcome, Jason!
+        <h1 style={{ textShadow: `2px 2px 5pxclear ${randomColourProperty()}` }}>
+          Welcome, {user.name}!
         </h1>
 
         <DadJokes />
@@ -49,14 +51,6 @@ export default function HomePage() {
           weeklyAttemptPercentage={spellingStats.weeklyAttemptPercentage}
           weeklyAccuracy={spellingStats.weeklyAccuracy}
           weeklySummary={weeklySummary}
-        />
-      </div>
-
-      <div>
-        <TextToSpeech
-          text={
-            "To add controls for changing the voice, speed, and pitch of the speech synthesis, we can create new state variables for each of these properties in our TextToSpeech component. We can then add input elements to allow the user to adjust these properties."
-          }
         />
       </div>
     </>

@@ -19,8 +19,12 @@ class ProgressProvider extends React.Component {
     }, 0);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.valueEnd !== this.props.valueEnd) {
+  componentDidUpdate(prevProps) {
+    // Only update if the prop changed and it's different from current state
+    if (
+      prevProps.valueEnd !== this.props.valueEnd &&
+      this.state.value !== this.props.valueEnd
+    ) {
       this.setState({
         value: this.props.valueEnd,
       });

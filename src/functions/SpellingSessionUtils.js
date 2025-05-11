@@ -3,7 +3,6 @@
   storaging the user's current session
 */
 
-import { getSpellingWordsCount } from "./UserSettings";
 
 export function incrementCurrentWordIndex(userId, weekNumber, dayNumber) {
   // Retrieve the spelling sessions from localStorage
@@ -462,7 +461,7 @@ export function getDailyAttemptedPercent(userId, weekNumber, dayNumber) {
       if (day) {
         // Get the total words for the day
         const totalWords = day.dailySummary.totalWords;
-        const wordListCount = getSpellingWordsCount();
+        const wordListCount = 20
         // Calculate the percentage out of 10 words
         const percentage = (totalWords / wordListCount) * 100;
         // Return the percentage, capped at 100%

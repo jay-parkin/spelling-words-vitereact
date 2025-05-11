@@ -12,14 +12,27 @@ import AuthPage from "./pages/AuthPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import DashboardLayout from "./components/layouts/DashboardLayout";
 import Header from "./components/Header";
 
+import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
+
 function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // Fetch and decode the JWT to get the user role
+    const token = localStorage.getItem("jwt");
+    if (token) {
+      const decoded = jwtDecode(token);
+      setUser(decoded);
+    }
+  }, []);
+
   return (
     <BrowserRouter>
-      {" "}
-      {/* Use BrowserRouter instead */}
-      <Header /> {/* Header is shown on all routes */}
+      <Header />
       <Routes>
         <Route
           path="/"
@@ -29,15 +42,17 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<HomePage />} />
-          <Route path="spelling" element={<SpellingPage />} />
-          <Route path="maths" element={<MathsPage />} />
-          <Route path="sentences" element={<SentencesPage />} />
-          <Route path="word-search" element={<WordSearchPage />} />
-          <Route path="profile" element={<ProfilePage />} />
-          <Route path="settings" element={<SettingsPage />} />
+          <Route element={<DashboardLayout />}>
+            <Route index element={<HomePage user={user} />} />
+            <Route path="spelling" element={<SpellingPage user={user} />} />
+            <Route path="maths" element={<MathsPage />} />
+            <Route path="sentences" element={<SentencesPage />} />
+            <Route path="word-search" element={<WordSearchPage />} />
+            <Route path="profile" element={<ProfilePage />} />
+            <Route path="settings" element={<SettingsPage />} />
+          </Route>
         </Route>
-        
+
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />

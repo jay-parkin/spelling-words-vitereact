@@ -1,11 +1,19 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useUser } from "../contexts/UserContext";
 
 export default function Navbar({ navItems = [] }) {
   const [isOpen, setIsOpen] = useState(false);
+  const { logout, user } = useUser();
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/auth");
   };
 
   return (
@@ -41,8 +49,8 @@ export default function Navbar({ navItems = [] }) {
       <div className="nav-right">
         <ul className="profile-link">
           <li>
-            <NavLink to="/profile" onClick={() => setIsOpen(false)}>
-              Profile
+            <NavLink to="/auth" onClick={() => handleLogout()}>
+              Logout
             </NavLink>
           </li>
         </ul>

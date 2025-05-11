@@ -4,7 +4,7 @@ import { useState } from "react";
 import {
   getDailyAccuracy,
   getDailyWordList,
-} from "../functions/SpellingSessionUtils";
+} from "../utils/SpellingSessionUtils";
 
 import { LuChevronDown } from "react-icons/lu";
 

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useUser } from "../contexts/UserContext";
 
 export default function SignInForm() {
   const [username, setUsername] = useState("");
@@ -7,6 +8,7 @@ export default function SignInForm() {
   const [status, setStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { refreshUserFromToken } = useUser();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,7 +41,7 @@ export default function SignInForm() {
 
       if (response.ok) {
         localStorage.setItem("jwt", data.jwt); // Store JWT token in localStorage
-
+        refreshUserFromToken();
         // Redirect to the homepage after sign-in
         navigate("/");
       } else {

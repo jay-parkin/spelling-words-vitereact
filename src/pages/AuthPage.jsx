@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import SignInForm from "../components/SignIn";
 import SignUpForm from "../components/SignUp";
+
+import { useUser } from "../contexts/UserContext";
 
 export default function AuthPage() {
   const [type, setType] = useState("signIn");
 
+  const { user } = useUser();
+  const navigate = useNavigate();
+
   useEffect(() => {
-    localStorage.removeItem("jwt");
-  });
+    if (user) {
+      navigate("/");
+    }
+  }, [user]);
 
   const handleOnClick = (text) => {
     if (text !== type) {

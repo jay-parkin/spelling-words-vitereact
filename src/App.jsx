@@ -15,21 +15,10 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import DashboardLayout from "./components/layouts/DashboardLayout";
 import Header from "./components/Header";
 
-import { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
+import { useUser } from "./contexts/UserContext";
 
 function App() {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    // Fetch and decode the JWT to get the user role
-    const token = localStorage.getItem("jwt");
-    if (token) {
-      const decoded = jwtDecode(token);
-      setUser(decoded);
-    }
-  }, []);
-
+  const { user } = useUser();
   return (
     <BrowserRouter>
       <Header />

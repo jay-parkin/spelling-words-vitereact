@@ -1,5 +1,5 @@
 import SpellingWords from "../components/SpellingWords";
-import randomColourProperty from "../functions/RandomColourProperty";
+import randomColourProperty from "../utils/RandomColourProperty";
 
 import "../styles/SpellingPage.css";
 

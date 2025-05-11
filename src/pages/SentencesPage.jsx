@@ -1,4 +1,4 @@
-import randomColourProperty from "../functions/RandomColourProperty";
+import randomColourProperty from "../utils/RandomColourProperty";
 
 export default function SentencesPage() {
   return (

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import WordCard from "./WordCard";
 import SpellingResults from "./SpellingResults";
-import randomColourProperty from "../functions/RandomColourProperty";
-import { getWeekNumber } from "../functions/TimeUtils.js";
+import randomColourProperty from "../utils/RandomColourProperty.js";
+import { getWeekNumber } from "../utils/TimeUtils.js";
 
 import { useUser } from "../contexts/UserContext";
 

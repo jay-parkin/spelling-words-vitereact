@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import MathsCard from "./MathsCard"; // Ensure this matches the exported name
-import randomColourProperty from "../functions/RandomColourProperty";
+import randomColourProperty from "../utils/RandomColourProperty";
 
 const TOTAL_EQUATIONS = 20;
 const QUESTIONS_PER_PAGE = 6;

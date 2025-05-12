@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
+import NotificationBell from "./NotificationBell";
 
 export default function Navbar({ navItems = [] }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -49,9 +50,7 @@ export default function Navbar({ navItems = [] }) {
       <div className="nav-right">
         <ul className="profile-link">
           <li>
-            <NavLink to="/auth" onClick={() => handleLogout()}>
-              Logout
-            </NavLink>
+            <NotificationBell />
           </li>
         </ul>
       </div>

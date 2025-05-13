@@ -60,7 +60,10 @@ export default function NotificationBell() {
 
   return (
     <div className="notification-container">
-      <div className="notification-icon" onClick={() => setOpen(!open)}>
+      <div
+        className={`notification-icon ${open ? "open" : ""}`}
+        onClick={() => setOpen(!open)}
+      >
         <img src={notificationIcon} alt="Notification" />
         {notifications.length > 0 && (
           <span className="notification-badge">{notifications.length}</span>
@@ -85,7 +88,7 @@ export default function NotificationBell() {
           </ul>
           {notifications.length > 0 && (
             <button className="mark-read" onClick={handleMarkAllAsRead}>
-              Mark all as read
+              Read
             </button>
           )}
         </div>

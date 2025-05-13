@@ -15,11 +15,14 @@ export default function SpellingWords() {
   const [wordStatuses, setWordStatuses] = useState([]);
   const [localCurrentWordIndex, setLocalCurrentWordIndex] = useState(0);
 
+  const [loading, setLoading] = useState(true);
+
   // Step 1: Initialize spelling session
   useEffect(() => {
     if (!user?.userId) return;
 
     const initSession = async () => {
+      setLoading(true);
       try {
         const url = `${import.meta.env.VITE_DATABASE_URL}/spelling/init`;
         const response = await fetch(url, {
@@ -70,6 +73,8 @@ export default function SpellingWords() {
         }
       } catch (error) {
         console.error("Status fetch error:", error);
+      } finally {
+        setLoading(false); // Done loading
       }
     };
 
@@ -124,6 +129,10 @@ export default function SpellingWords() {
     // All correct
     setLocalCurrentWordIndex(weeklyWordList.length);
   };
+
+  if (loading) {
+    return; // Or a spinner
+  }
 
   // Step 5: Check if session is complete
   const allCorrect =

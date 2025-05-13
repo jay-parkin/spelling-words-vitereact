@@ -1,37 +1,30 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import {
-  getDailyAccuracy,
-  getDailyWordList,
-} from "../utils/SpellingSessionUtils";
-
-import { LuChevronDown } from "react-icons/lu";
-
-export default function SpellingResults(props) {
-  const { userId, weekNumber, dayNumber } = props;
-
-  // Pull accuracy from localstorage
-  const [localStoragePercentage] = useState(() => {
-    const percentage = getDailyAccuracy(userId, weekNumber, dayNumber);
-    return percentage;
-  });
-
-  // Pull the daily word list from localstorage
-  const [localStorageDailyWords] = useState(() => {
-    const dailyWords = getDailyWordList(userId, weekNumber, dayNumber);
-    return dailyWords;
-  });
-
-  // State to track the currently open index
+export default function SpellingResults({ userId, weekNumber, dayNumber }) {
+  const [accuracy, setAccuracy] = useState(null);
+  const [dailyWords, setDailyWords] = useState([]);
   const [openIndex, setOpenIndex] = useState(null);
 
-  const handleToggle = (index) => {
-    // Toggle the accordion
-    setOpenIndex(openIndex === index ? null : index);
-  };
+  useEffect(() => {
+    const fetchResults = async () => {
+      try {
+        const url = `${
+          import.meta.env.VITE_DATABASE_URL
+        }/spelling/${userId}/week/${weekNumber}/day/${dayNumber}/results`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Failed to fetch results");
 
-  // Function to get encouraging message based on percentage
+        const data = await response.json();
+        setAccuracy(data.summary.accuracy);
+        setDailyWords(data.words);
+      } catch (error) {
+        console.error("Error fetching spelling results:", error);
+      }
+    };
+
+    fetchResults();
+  }, [userId, weekNumber, dayNumber]);
+
   const getEncouragingMessage = (percentage) => {
     if (percentage === null) return "Keep trying!";
     if (percentage === 100) return "Outstanding! You're a spelling superstar!";
@@ -48,31 +41,31 @@ export default function SpellingResults(props) {
     return "Don't give up! Every attempt makes you better!";
   };
 
+  const handleToggle = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
   return (
     <div className="spelling-results-body">
       <div className="spelling-results-container">
         <header className="spelling-result-header">Spelling Report</header>
-
-        {/* <div className="spacer"></div> */}
-
         <section className="spelling-results-section">
           <h3>
-            {/* Add a summary from an object of a 
-              bunch of different inspiring words.
-              Summary must be out of a percent of correct answers*/}
-            Summary: {localStoragePercentage}%
-            <p>{getEncouragingMessage(localStoragePercentage)}</p>
+            Summary:{" "}
+            {accuracy != null ? `${accuracy.toFixed(0)}%` : "Loading..."}
+            <p>{getEncouragingMessage(accuracy)}</p>
           </h3>
         </section>
 
-        <section className="spelling-results-section">
+        {/* Something I might bring back later */}
+        {/* <section className="spelling-results-section">
           <h3>Overview</h3>
           <p>Check out the overview of your report</p>
         </section>
 
         <section>
           <ul className="spelling-item-list">
-            {localStorageDailyWords.map((currentWord, index) => (
+            {dailyWords.map((currentWord, index) => (
               <li key={index} className="accordion-item">
                 <div
                   onClick={() => handleToggle(index)}
@@ -80,7 +73,7 @@ export default function SpellingResults(props) {
                 >
                   <div className="accordion-status">
                     <strong>{currentWord.word}</strong>
-                    {currentWord.isCorrect ? "Correct" : "Incorrect"}
+                    {currentWord.correctAttempt > 0 ? "Correct" : "Incorrect"}
                   </div>
                   <div
                     className={`accordion-icon ${
@@ -90,15 +83,15 @@ export default function SpellingResults(props) {
                     <LuChevronDown />
                   </div>
                 </div>
-                {/* Show details if this index is open */}
                 {openIndex === index && (
                   <div className="accordion-content">
                     <p>
-                      {currentWord.isCorrect ? (
+                      {currentWord.correctAttempt > 0 ? (
                         "Great job!"
                       ) : (
                         <>
-                          Your answer: {currentWord.userInput} <br />
+                          Your last input:{" "}
+                          {currentWord.history?.at(-1)?.input || "N/A"} <br />
                           Correct answer: {currentWord.word}
                         </>
                       )}
@@ -108,7 +101,7 @@ export default function SpellingResults(props) {
               </li>
             ))}
           </ul>
-        </section>
+        </section> */}
       </div>
     </div>
   );

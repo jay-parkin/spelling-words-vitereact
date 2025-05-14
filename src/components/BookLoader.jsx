@@ -106,7 +106,7 @@ const StyledWrapper = styled.div`
     width: 50%;
     height: auto;
     position: absolute;
-    animation: paging 0.15s linear infinite;
+    animation: paging 0.3s linear infinite;
     transform-origin: left;
   }
   @keyframes paging {

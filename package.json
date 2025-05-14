@@ -33,7 +33,7 @@
     "react-router": "^6.26.2",
     "react-router-dom": "^6.27.0",
     "react-use": "^17.5.1",
-    "styled-components": "^6.1.13",
+    "styled-components": "^6.1.18",
     "uuidv4": "^6.2.13"
   },
   "devDependencies": {

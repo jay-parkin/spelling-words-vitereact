@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
 
+import BookLoader from "./BookLoader";
+
 export default function SignInForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -75,7 +77,7 @@ export default function SignInForm() {
         />
         <Link to="/forgot-password">Forgot your password?</Link>
         <button type="submit" disabled={isLoading}>
-          {isLoading ? "Signing In..." : "Sign In"}
+          {isLoading ? <BookLoader /> : "Sign In"}
         </button>
         {status && <p className="status">{status}</p>}
       </form>

@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Form } from "react-bootstrap";
 import { TbMathSymbols } from "react-icons/tb";
 import Button from "react-bootstrap/Button";
 
 import "../styles/MathsPage.css";
 
-export default function MathsCard(props) {
-  const { equation, answer, onDelete, designColour } = props;
+export default function MathsCard({
+  id,
+  equation,
+  answer,
+  onDelete,
+  onAttempt,
+  designColour,
+}) {
   // Local state to manage input field disabled state
   const [inputValue, setInputValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -20,6 +26,10 @@ export default function MathsCard(props) {
   // Check whether the input equals the equation's answer
   const handleNextEquation = () => {
     const isCorrect = parseInt(inputValue.trim()) === answer;
+
+    if (onAttempt) {
+      onAttempt(id, inputValue.trim(), isCorrect, answer);
+    }
 
     if (isCorrect) {
       onDelete();

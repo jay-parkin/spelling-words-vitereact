@@ -6,6 +6,8 @@ import { getWeekNumber } from "../utils/TimeUtils.js";
 
 import { useUser } from "../contexts/UserContext";
 
+import DoggyLoader from "./loader/DoggySleeping.jsx";
+
 export default function SpellingWords() {
   const today = new Date().getDay();
   const week = getWeekNumber(new Date());
@@ -16,6 +18,7 @@ export default function SpellingWords() {
   const [localCurrentWordIndex, setLocalCurrentWordIndex] = useState(0);
 
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
 
   // Step 1: Initialize spelling session
   useEffect(() => {
@@ -23,6 +26,8 @@ export default function SpellingWords() {
 
     const initSession = async () => {
       setLoading(true);
+      setLoadError(null);
+
       try {
         const url = `${import.meta.env.VITE_DATABASE_URL}/spelling/init`;
         const response = await fetch(url, {
@@ -34,7 +39,15 @@ export default function SpellingWords() {
           }),
         });
 
-        if (!response.ok) throw new Error("Failed to init session");
+        if (!response.ok) {
+          if (response.status === 403 || response.status === 404) {
+            setLoadError("You're not assigned to a classroom yet.");
+          } else {
+            setLoadError("Failed to initialize spelling session.");
+          }
+          setLoading(false);
+          return;
+        }
 
         const data = await response.json();
         const wordList =
@@ -43,6 +56,7 @@ export default function SpellingWords() {
         setWordList(wordList);
       } catch (error) {
         console.error("Init error:", error);
+        setLoadError("Network or server error.");
       }
     };
 
@@ -73,8 +87,9 @@ export default function SpellingWords() {
         }
       } catch (error) {
         console.error("Status fetch error:", error);
+        setLoadError("Failed to fetch today's spelling progress.");
       } finally {
-        setLoading(false); // Done loading
+        setLoading(false);
       }
     };
 
@@ -131,7 +146,22 @@ export default function SpellingWords() {
   };
 
   if (loading) {
-    return; // Or a spinner
+    return (
+      <div className="loader-wrapper">
+        <DoggyLoader />
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="error-container">
+        <h2>🐶 Zzz...</h2>
+        <DoggyLoader />
+        <p>{loadError}</p>
+        <p>Please ask your teacher to assign you to a classroom.</p>
+      </div>
+    );
   }
 
   // Step 5: Check if session is complete

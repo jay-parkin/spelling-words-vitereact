@@ -15,7 +15,6 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import DashboardLayout from "./components/layouts/DashboardLayout";
 import Header from "./components/Header";
 
-import "./styles/BookLoader.css";
 import { useUser } from "./contexts/UserContext";
 
 function App() {

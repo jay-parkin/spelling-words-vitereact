@@ -63,6 +63,15 @@ body {
   margin-bottom: 10px;
 }
 
+.loader-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px; /* or 100vh for full screen */
+  width: 100%;
+  overflow: hidden;
+}
+
 .loader {
   width: 100px;
   height: 100px;

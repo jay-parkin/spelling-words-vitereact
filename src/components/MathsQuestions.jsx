@@ -1,105 +1,196 @@
 import { useState, useEffect } from "react";
-import MathsCard from "./MathsCard"; // Ensure this matches the exported name
+import { useUser } from "../contexts/UserContext";
 import randomColourProperty from "../utils/RandomColourProperty";
+import { getWeekNumber } from "../utils/TimeUtils";
+import MathsCard from "./MathsCard";
+import MathsResults from "./MathsResults";
 
-const TOTAL_EQUATIONS = 20;
+import DoggyLoader from "./loader/DoggySleeping";
+
 const QUESTIONS_PER_PAGE = 6;
 
 export default function MathsQuestions() {
-  // Array to hold all questions
   const [questions, setQuestions] = useState([]);
   const [displayedQuestions, setDisplayedQuestions] = useState([]);
   const [finished, setFinished] = useState(false);
+  const { user } = useUser();
 
-  let idCounter = 0;
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
-  // Function to generate random equations and answers
-  const generateRandomEquation = (id) => {
-    const operators = ["+", "-", "*", "/"];
-    const operator = operators[Math.floor(Math.random() * operators.length)];
-    const num1 = Math.floor(Math.random() * 10) + 1;
-    const num2 = Math.floor(Math.random() * 10) + 1;
-    let equation;
-    let answer;
+  const today = new Date().getDay();
+  const weekNumber = getWeekNumber(new Date());
 
-    // Construct equation string and get the answer
-    switch (operator) {
-      case "+":
-        equation = `${num1} + ${num2}`;
-        answer = num1 + num2;
-        break;
-      case "-":
-        equation = `${num1} - ${num2}`;
-        answer = num1 - num2;
-        break;
-      case "*":
-        equation = `${num1} x ${num2}`;
-        answer = num1 * num2;
-        break;
-      case "/":
-        equation = `${num1 * num2} / ${num1}`;
-        answer = num2;
-        break;
-      default:
-        break;
-    }
-
-    // Return an object with the equation, answer, and unique id
-    return { id, equation, answer };
-  };
-
-  // Generate all questions with unique IDs
-  const generateAllQuestions = () => {
-    const newQuestions = Array.from({ length: TOTAL_EQUATIONS }, () =>
-      generateRandomEquation(idCounter++)
-    );
-
-    setQuestions(newQuestions);
-    setDisplayedQuestions(newQuestions.slice(0, QUESTIONS_PER_PAGE));
-  };
-
-  // Run when the component first loads to generate the questions
+  // Step 1: Initialize maths session
   useEffect(() => {
-    generateAllQuestions();
-  }, []);
+    if (!user?.userId) return;
 
-  // Method to delete (remove) a question based on its ID
-  const deleteQuestion = (id) => {
-    // Remove the question from questions based on its id
-    const updatedQuestions = questions.filter((question) => question.id !== id);
+    const fetchQuestions = async () => {
+      setLoading(true);
+      setLoadError(false);
 
-    setQuestions(updatedQuestions); // Update all questions
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_DATABASE_URL}/maths/${user.userId}`
+        );
 
-    // If all questions are answered, mark as finished
-    if (updatedQuestions.length === 0) {
-      setFinished(true);
-    } else {
-      // Update the displayed questions based on the current questions
-      const newDisplayedQuestions = updatedQuestions.slice(
-        0,
-        QUESTIONS_PER_PAGE
+        if (!res.ok) {
+          if (res.status === 404) {
+            // No session found — treat as user not yet assigned
+            setLoadError("You're not assigned to a classroom yet.");
+          } else {
+            setLoadError("Unexpected error fetching your session.");
+          }
+          setLoading(false);
+          return;
+        }
+
+        const session = await res.json();
+        const week = session.weeks.find((w) => w.weekNumber === weekNumber);
+        if (!week) {
+          setLoadError("No data available for this week.");
+          setLoading(false);
+          return;
+        }
+
+        const todayObj = week.days[today];
+        let todayQuestions = todayObj.questions || [];
+
+        if (todayQuestions.length === 0) {
+          // Generate placeholder questions
+          const generatedQuestions = Array.from({ length: 6 }).map(() => {
+            const a = Math.floor(Math.random() * 10);
+            const b = Math.floor(Math.random() * 10);
+            return {
+              equation: `${a} + ${b}`,
+              correctAnswer: a + b,
+            };
+          });
+
+          // Send to backend to fill today
+          await fetch(
+            `${import.meta.env.VITE_DATABASE_URL}/maths/${
+              user.userId
+            }/weeks/${weekNumber}/fill-today`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ questions: generatedQuestions }),
+            }
+          );
+
+          // Refetch session
+          const retryRes = await fetch(
+            `${import.meta.env.VITE_DATABASE_URL}/maths/${user.userId}`
+          );
+          const retrySession = await retryRes.json();
+          const retryWeek = retrySession.weeks.find(
+            (w) => w.weekNumber === weekNumber
+          );
+          const retryToday = retryWeek?.days[today];
+          todayQuestions = retryToday?.questions || [];
+        }
+
+        const unansweredQuestions = todayQuestions.filter((q) => !q.isCorrect);
+
+        setQuestions(unansweredQuestions);
+        setDisplayedQuestions(unansweredQuestions.slice(0, QUESTIONS_PER_PAGE));
+        if (unansweredQuestions.length === 0) setFinished(true);
+      } catch (err) {
+        console.error("Failed to fetch session:", err);
+        setLoadError("There was a network or server error.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQuestions();
+  }, [user?.userId, weekNumber, today]);
+
+  // Function to handle attempts
+  // This function is called when the user attempts to answer a question
+  const handleAttempt = async (id, userInput, isCorrect, correctAnswer) => {
+    if (!user?.userId) return;
+
+    try {
+      await fetch(
+        `${import.meta.env.VITE_DATABASE_URL}/maths/${
+          user.userId
+        }/weeks/${weekNumber}/days/${today}/attempt/${id}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userInput }),
+        }
       );
-      setDisplayedQuestions(newDisplayedQuestions);
+
+      const res = await fetch(
+        `${import.meta.env.VITE_DATABASE_URL}/maths/${user.userId}`
+      );
+      const session = await res.json();
+      const week = session.weeks.find((w) => w.weekNumber === weekNumber);
+      const todayObj = week.days[today];
+
+      const updatedQuestions = todayObj.questions || [];
+      const remaining = updatedQuestions.filter((q) => !q.isCorrect);
+
+      setQuestions(remaining);
+      setDisplayedQuestions(remaining.slice(0, QUESTIONS_PER_PAGE));
+      if (remaining.length === 0) setFinished(true);
+    } catch (err) {
+      console.error("Failed to save maths attempt:", err);
     }
   };
+
+  const deleteQuestion = (id) => {
+    const updated = questions.filter((q) => q._id !== id);
+    setQuestions(updated);
+    setDisplayedQuestions(updated.slice(0, QUESTIONS_PER_PAGE));
+    if (updated.length === 0) setFinished(true);
+  };
+
+  if (loading) {
+    return (
+      <div className="loader-wrapper">
+        <DoggyLoader />
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="error-container">
+        <h2>📚 Uh-oh!</h2>
+        <DoggyLoader />
+        <p>{loadError}</p>
+        <p>Please ask your teacher to assign you to a classroom.</p>
+      </div>
+    );
+  }
+
+  if (finished) {
+    return (
+      <MathsResults
+        userId={user?.userId}
+        weekNumber={weekNumber}
+        dayNumber={today}
+      />
+    );
+  }
 
   return (
     <section className="maths-body">
-      {finished ? (
-        <h2>Congratulations! You've answered all questions!</h2>
-      ) : (
-        <>
-          {displayedQuestions.map((question) => (
-            <MathsCard
-              key={question.id}
-              equation={question.equation}
-              answer={question.answer}
-              onDelete={() => deleteQuestion(question.id)}
-              designColour={randomColourProperty()}
-            />
-          ))}
-        </>
-      )}
+      {displayedQuestions.map((question) => (
+        <MathsCard
+          key={question._id}
+          id={question._id}
+          equation={question.equation}
+          answer={question.correctAnswer}
+          onDelete={() => deleteQuestion(question._id)}
+          onAttempt={handleAttempt}
+          designColour={randomColourProperty()}
+        />
+      ))}
     </section>
   );
 }

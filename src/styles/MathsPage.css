@@ -93,3 +93,11 @@
   border-radius: 5px;
   width: 100%;
 }
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+}

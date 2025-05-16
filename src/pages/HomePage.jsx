@@ -18,14 +18,16 @@ export default function HomePage() {
 
     const fetchProgress = async () => {
       try {
-           
-        const response = await fetch( `${
-          import.meta.env.VITE_DATABASE_URL
-        }/spelling/user-progress/${user.userId}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-          },
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_DATABASE_URL}/spelling/user-progress/${
+            user.userId
+          }`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+            },
+          }
+        );
         if (!response.ok) throw new Error("Failed to fetch user progress");
         const data = await response.json();
 
@@ -48,6 +50,7 @@ export default function HomePage() {
 
   return (
     <>
+      {/*TODO: Make this a component */}
       <div className="page-title homepage-title">
         <h1 style={{ textShadow: `2px 2px 5px ${randomColourProperty()}` }}>
           Welcome, {user?.name}!

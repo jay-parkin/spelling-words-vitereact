@@ -101,3 +101,48 @@
   align-items: center;
   margin-top: 1rem;
 }
+
+.maths-results-body {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.maths-results-container {
+  width: 600px;
+  padding: 20px;
+  border: 1px solid #eaeaea;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.maths-result-header {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  align-self: center;
+  width: 100%;
+  padding: 0;
+}
+
+.maths-results-section {
+  padding: 15px 0;
+  border-top: 1px solid #eaeaea;
+}
+
+.maths-results-section h3 {
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0 0 5px;
+}
+
+.maths-results-section p {
+  margin: 0;
+  font-weight: 500;
+  color: #6b6b6b;
+}

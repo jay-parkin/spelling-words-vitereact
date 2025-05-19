@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { LuChevronDown } from "react-icons/lu";
 
 export default function MathsResults({ userId, weekNumber, dayNumber }) {
   const [summary, setSummary] = useState(null);
@@ -27,11 +28,18 @@ export default function MathsResults({ userId, weekNumber, dayNumber }) {
 
   const getEncouragingMessage = (accuracy) => {
     if (accuracy === null || accuracy === undefined) return "Keep trying!";
-    if (accuracy === 100) return "Flawless! 🎉";
-    if (accuracy >= 90) return "Amazing accuracy!";
-    if (accuracy >= 75) return "Great job!";
-    if (accuracy >= 50) return "Nice effort!";
-    return "Keep practicing!";
+    if (accuracy === 100) return "Outstanding! You're a maths superstar!";
+    if (accuracy >= 95) return "Amazing! You aced it!";
+    if (accuracy >= 90) return "Fantastic work!";
+    if (accuracy >= 85) return "Great job! You're doing well!";
+    if (accuracy >= 80) return "Good effort! Keep it up!";
+    if (accuracy >= 75) return "Nice job! You're improving!";
+    if (accuracy >= 70) return "Well done! Keep practicing!";
+    if (accuracy >= 65) return "Good start! You can do even better!";
+    if (accuracy >= 60) return "You're on the right track!";
+    if (accuracy >= 55) return "Keep working hard!";
+    if (accuracy >= 50) return "You've got this! Keep trying!";
+    return "Don't give up! Every attempt makes you better!";
   };
 
   const handleToggle = (index) => {
@@ -45,7 +53,7 @@ export default function MathsResults({ userId, weekNumber, dayNumber }) {
 
         <section className="maths-results-section">
           <h3>
-            Accuracy:{" "}
+            Summary:{" "}
             {summary ? `${summary.accuracy.toFixed(0)}%` : "Loading..."}
             <p>{getEncouragingMessage(summary?.accuracy)}</p>
           </h3>
@@ -63,16 +71,25 @@ export default function MathsResults({ userId, weekNumber, dayNumber }) {
                     <strong>{q.equation}</strong> –{" "}
                     {q.isCorrect ? "✅ Correct" : "❌ Incorrect"}
                   </div>
-                  <div
+                  <LuChevronDown
                     className={`accordion-icon ${
                       openIndex === index ? "open" : ""
                     }`}
-                  >
-                    ▼
-                  </div>
+                  />
                 </div>
                 {openIndex === index && (
                   <div className="accordion-content">
+                    <p>
+                      {q.isCorrect ? (
+                        "Great job!"
+                      ) : (
+                        <>
+                          Your last input: {q.history?.at(-1)?.input || "N/A"}{" "}
+                          <br />
+                          Correct answer: {q.correctAnswer}
+                        </>
+                      )}
+                    </p>
                     <p>
                       <strong>Attempts:</strong>
                     </p>

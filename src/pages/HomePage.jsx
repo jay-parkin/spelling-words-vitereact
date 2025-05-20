@@ -12,9 +12,42 @@ export default function HomePage() {
 
   const [weeklySpellingSummary, setWeeklySpellingSummary] = useState(null);
   const [dailySpellingStats, setDailySpellingStats] = useState(null);
+  const [spellingAttemptedPercentage, setSpellingAttemptedPercentage] =
+    useState(0);
 
   const [weeklyMathsSummary, setWeeklyMathsSummary] = useState(null);
   const [dailyMathsStats, setDailyMathsStats] = useState(null);
+  const [mathsAttemptedPercentage, setMathsAttemptedPercentage] = useState(0);
+
+  const calculateMathsWeeklyAttemptPercentage = (weekData) => {
+    if (!weekData?.questionList?.length) return 0;
+
+    const totalQuestions = weekData.questionList.length;
+
+    const attemptedQuestions = weekData.questionList.filter(
+      (q) => (q.correctAttempt || 0) > 0 || (q.incorrectAttempt || 0) > 0
+    ).length;
+
+    const percentage = (attemptedQuestions / totalQuestions) * 100;
+
+    return Math.round(percentage);
+  };
+
+  const calculateSpellingWeeklyAttemptPercentage = (weekData) => {
+    if (!weekData?.wordList?.length) return 0;
+
+    const totalWords = weekData.wordList.length;
+
+    const attemptedWords = weekData.wordList.filter((word) => {
+      return (
+        (word.correctAttempt || 0) > 0 ||
+        (word.incorrectAttempt || 0) > 0 ||
+        (word.history?.length || 0) > 0
+      );
+    }).length;
+
+    return Math.round((attemptedWords / totalWords) * 100);
+  };
 
   // Pull spelling session
   useEffect(() => {
@@ -43,6 +76,10 @@ export default function HomePage() {
         if (todayData?.dailySummary) {
           setDailySpellingStats(todayData.dailySummary);
         }
+
+        setSpellingAttemptedPercentage(
+          calculateSpellingWeeklyAttemptPercentage(weekData)
+        );
       } catch (err) {
         console.error("Error loading spelling progress:", err);
       }
@@ -79,6 +116,10 @@ export default function HomePage() {
         if (todayData?.dailySummary) {
           setDailyMathsStats(todayData.dailySummary);
         }
+
+        setMathsAttemptedPercentage(
+          calculateMathsWeeklyAttemptPercentage(weekData)
+        );
       } catch (err) {
         console.error("Error loading maths progress:", err);
       }
@@ -109,14 +150,7 @@ export default function HomePage() {
                 : 0
             }
             dailyAccuracy={dailySpellingStats.accuracy}
-            weeklyAttemptPercentage={
-              weeklySpellingSummary.totalWords > 0
-                ? ((weeklySpellingSummary.correctWords +
-                    weeklySpellingSummary.incorrectWords) /
-                    weeklySpellingSummary.totalWords) *
-                  100
-                : 0
-            }
+            weeklyAttemptPercentage={spellingAttemptedPercentage}
             weeklyAccuracy={weeklySpellingSummary.accuracy}
             weeklySummary={weeklySpellingSummary}
           />
@@ -134,14 +168,7 @@ export default function HomePage() {
                 : 0
             }
             dailyAccuracy={dailyMathsStats.accuracy}
-            weeklyAttemptPercentage={
-              weeklyMathsSummary.totalQuestions > 0
-                ? ((weeklyMathsSummary.correctQuestions +
-                    weeklyMathsSummary.incorrectQuestions) /
-                    weeklyMathsSummary.totalQuestions) *
-                  100
-                : 0
-            }
+            weeklyAttemptPercentage={mathsAttemptedPercentage}
             weeklyAccuracy={weeklyMathsSummary.accuracy}
             weeklySummary={weeklyMathsSummary}
           />

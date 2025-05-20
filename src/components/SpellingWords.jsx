@@ -20,7 +20,7 @@ export default function SpellingWords() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
 
-  // Step 1: Initialize spelling session
+  // Initialize spelling session
   useEffect(() => {
     if (!user?.userId) return;
 
@@ -63,7 +63,7 @@ export default function SpellingWords() {
     initSession();
   }, [user, week]);
 
-  // Step 2: Fetch daily word statuses from backend
+  // Fetch daily word statuses from backend
   useEffect(() => {
     if (weeklyWordList.length === 0 || !user?.userId) return;
 
@@ -96,7 +96,7 @@ export default function SpellingWords() {
     fetchWordStatus();
   }, [user?.userId, weeklyWordList]);
 
-  // Step 3: Attempt handler (send to backend + update status)
+  // Attempt handler (send to backend + update status)
   const handleAttempt = async (userInput) => {
     const currentWordData = weeklyWordList[localCurrentWordIndex];
     const isCorrect =
@@ -131,7 +131,7 @@ export default function SpellingWords() {
     }
   };
 
-  // Step 4: Move to next incomplete word
+  // Move to next incomplete word
   const handleNextWord = () => {
     for (let i = 1; i <= weeklyWordList.length; i++) {
       const nextIndex = (localCurrentWordIndex + i) % weeklyWordList.length;
@@ -164,7 +164,7 @@ export default function SpellingWords() {
     );
   }
 
-  // Step 5: Check if session is complete
+  // Check if session is complete
   const allCorrect =
     wordStatuses.length > 0 && wordStatuses.every((w) => w.isCorrect);
 

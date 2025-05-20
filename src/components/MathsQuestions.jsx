@@ -10,102 +10,101 @@ import DoggyLoader from "./loader/DoggySleeping";
 const QUESTIONS_PER_PAGE = 6;
 
 export default function MathsQuestions() {
+  const today = new Date().getDay();
+  const week = getWeekNumber(new Date());
+  const { user } = useUser();
+
+  const [weeklyMathsList, setMathsList] = useState([]);
+  const [mathsStatuses, setMathsStatuses] = useState([]);
+  const [localCurrentMathsIndex, setLocalCurrentMathsIndex] = useState(0);
+  const [finished, setFinished] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [displayedQuestions, setDisplayedQuestions] = useState([]);
-  const [finished, setFinished] = useState(false);
-  const { user } = useUser();
 
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
 
-  const today = new Date().getDay();
-  const weekNumber = getWeekNumber(new Date());
-
-  // Step 1: Initialize maths session
+  // Initialize maths session
   useEffect(() => {
     if (!user?.userId) return;
 
-    const fetchQuestions = async () => {
+    const initSession = async () => {
       setLoading(true);
-      setLoadError(false);
+      setLoadError(null);
 
       try {
-        const res = await fetch(
-          `${import.meta.env.VITE_DATABASE_URL}/maths/${user.userId}`
-        );
+        const url = `${import.meta.env.VITE_DATABASE_URL}/maths/init`;
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user?.userId,
+            weekNumber: week,
+          }),
+        });
 
-        if (!res.ok) {
-          if (res.status === 404) {
-            // No session found — treat as user not yet assigned
+        if (!response.ok) {
+          if (response.status === 403 || response.status === 404) {
             setLoadError("You're not assigned to a classroom yet.");
           } else {
-            setLoadError("Unexpected error fetching your session.");
+            setLoadError("Failed to initialize maths session.");
           }
           setLoading(false);
           return;
         }
 
-        const session = await res.json();
-        const week = session.weeks.find((w) => w.weekNumber === weekNumber);
-        if (!week) {
-          setLoadError("No data available for this week.");
-          setLoading(false);
-          return;
-        }
+        const data = await response.json();
+        const questionsList =
+          data.session.weeks.find((w) => w.weekNumber === week)?.questionList ||
+          [];
 
-        const todayObj = week.days[today];
-        let todayQuestions = todayObj.questions || [];
+        setMathsList(questionsList);
+        setQuestions(questionsList);
+        setDisplayedQuestions(questionsList.slice(0, QUESTIONS_PER_PAGE));
+        if (questionsList.length === 0) setFinished(true);
+      } catch (error) {
+        console.error("Init error:", error);
+        setLoadError("Network or server error.");
+      }
+    };
 
-        if (todayQuestions.length === 0) {
-          // Generate placeholder questions
-          const generatedQuestions = Array.from({ length: 6 }).map(() => {
-            const a = Math.floor(Math.random() * 10);
-            const b = Math.floor(Math.random() * 10);
-            return {
-              equation: `${a} + ${b}`,
-              correctAnswer: a + b,
-            };
-          });
+    initSession();
+  }, [user, week]);
 
-          // Send to backend to fill today
-          await fetch(
-            `${import.meta.env.VITE_DATABASE_URL}/maths/${
-              user.userId
-            }/weeks/${weekNumber}/fill-today`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ questions: generatedQuestions }),
-            }
-          );
+  // Fetch daily maths questions statuses from backend
+  useEffect(() => {
+    if (weeklyMathsList.length === 0 || !user?.userId) return;
 
-          // Refetch session
-          const retryRes = await fetch(
-            `${import.meta.env.VITE_DATABASE_URL}/maths/${user.userId}`
-          );
-          const retrySession = await retryRes.json();
-          const retryWeek = retrySession.weeks.find(
-            (w) => w.weekNumber === weekNumber
-          );
-          const retryToday = retryWeek?.days[today];
-          todayQuestions = retryToday?.questions || [];
-        }
+    const fetchMathsStatus = async () => {
+      try {
+        const url = `${import.meta.env.VITE_DATABASE_URL}/maths/${
+          user?.userId
+        }/week/${week}/day/${today}/status`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Failed to fetch maths statuses");
 
-        const unansweredQuestions = todayQuestions.filter((q) => !q.isCorrect);
+        const data = await response.json();
+        setMathsStatuses(data.questionStatuses);
 
-        setQuestions(unansweredQuestions);
-        setDisplayedQuestions(unansweredQuestions.slice(0, QUESTIONS_PER_PAGE));
-        if (unansweredQuestions.length === 0) setFinished(true);
-      } catch (err) {
-        console.error("Failed to fetch session:", err);
-        setLoadError("There was a network or server error.");
+        const incorrectQuestions = data.questionStatuses
+          .filter((q) => !q.isCorrect)
+          .map((q) => weeklyMathsList[q.index]);
+
+        setQuestions(incorrectQuestions);
+        setDisplayedQuestions(incorrectQuestions.slice(0, QUESTIONS_PER_PAGE));
+
+        if (incorrectQuestions.length === 0) setFinished(true);
+      } catch (error) {
+        console.error("Status fetch error:", error);
+        setLoadError("Failed to fetch today's maths progress.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchQuestions();
-  }, [user?.userId, weekNumber, today]);
+    fetchMathsStatus();
+  }, [user?.userId, weeklyMathsList]);
+
 
   // Function to handle attempts
   // This function is called when the user attempts to answer a question
@@ -116,7 +115,7 @@ export default function MathsQuestions() {
       await fetch(
         `${import.meta.env.VITE_DATABASE_URL}/maths/${
           user.userId
-        }/weeks/${weekNumber}/days/${today}/attempt/${id}`,
+        }/weeks/${week}/days/${today}/attempt/${id}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -128,8 +127,8 @@ export default function MathsQuestions() {
         `${import.meta.env.VITE_DATABASE_URL}/maths/${user.userId}`
       );
       const session = await res.json();
-      const week = session.weeks.find((w) => w.weekNumber === weekNumber);
-      const todayObj = week.days[today];
+      const currentWeek = session.weeks.find((w) => w.weekNumber === week);
+      const todayObj = currentWeek.days[today];
 
       const updatedQuestions = todayObj.questions || [];
       const remaining = updatedQuestions.filter((q) => !q.isCorrect);
@@ -170,11 +169,7 @@ export default function MathsQuestions() {
 
   if (finished) {
     return (
-      <MathsResults
-        userId={user?.userId}
-        weekNumber={weekNumber}
-        dayNumber={today}
-      />
+      <MathsResults userId={user?.userId} weekNumber={week} dayNumber={today} />
     );
   }
 

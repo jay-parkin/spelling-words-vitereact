@@ -39,7 +39,7 @@ export default function MathsQuestions() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             userId: user?.userId,
-            weekNumber: week,
+            weekNumber: 21,
           }),
         });
 
@@ -105,7 +105,6 @@ export default function MathsQuestions() {
     fetchMathsStatus();
   }, [user?.userId, weeklyMathsList]);
 
-
   // Function to handle attempts
   // This function is called when the user attempts to answer a question
   const handleAttempt = async (id, userInput, isCorrect, correctAnswer) => {
@@ -151,6 +150,7 @@ export default function MathsQuestions() {
   if (loading) {
     return (
       <div className="loader-wrapper">
+        <h2>Zzz...</h2>
         <DoggyLoader />
       </div>
     );

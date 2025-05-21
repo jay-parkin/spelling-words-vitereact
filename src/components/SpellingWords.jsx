@@ -148,6 +148,7 @@ export default function SpellingWords() {
   if (loading) {
     return (
       <div className="loader-wrapper">
+        <h2>Zzz...</h2>
         <DoggyLoader />
       </div>
     );
@@ -156,7 +157,7 @@ export default function SpellingWords() {
   if (loadError) {
     return (
       <div className="error-container">
-        <h2>🐶 Zzz...</h2>
+        <h2>📚 Uh-oh!</h2>
         <DoggyLoader />
         <p>{loadError}</p>
         <p>Please ask your teacher to assign you to a classroom.</p>

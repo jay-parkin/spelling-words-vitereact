@@ -14,39 +14,63 @@ export default function HomePage() {
   const [dailySpellingStats, setDailySpellingStats] = useState(null);
   const [spellingAttemptedPercentage, setSpellingAttemptedPercentage] =
     useState(0);
+  const [totalWords, setTotalWords] = useState(0);
 
   const [weeklyMathsSummary, setWeeklyMathsSummary] = useState(null);
   const [dailyMathsStats, setDailyMathsStats] = useState(null);
   const [mathsAttemptedPercentage, setMathsAttemptedPercentage] = useState(0);
+  const [totalQuestions, setTotalQuestions] = useState(0);
 
   const calculateMathsWeeklyAttemptPercentage = (weekData) => {
-    if (!weekData?.questionList?.length) return 0;
+    if (!weekData?.questionList?.length || !weekData?.days?.length) return 0;
 
     const totalQuestions = weekData.questionList.length;
+    setTotalQuestions(totalQuestions); // set for daily completed percentage
+    const expectedBase = totalQuestions * weekData.days.length;
 
-    const attemptedQuestions = weekData.questionList.filter(
-      (q) => (q.correctAttempt || 0) > 0 || (q.incorrectAttempt || 0) > 0
-    ).length;
+    let actualAttempts = 0;
+    let totalIncorrectAttempts = 0;
 
-    const percentage = (attemptedQuestions / totalQuestions) * 100;
+    weekData.days.forEach((day) => {
+      day.questions.forEach((q) => {
+        const correct = q.correctAttempt || 0;
+        const incorrect = q.incorrectAttempt || 0;
+        actualAttempts += correct + incorrect;
+        totalIncorrectAttempts += incorrect;
+      });
+    });
 
-    return Math.round(percentage);
+    const expectedTotal = expectedBase + totalIncorrectAttempts;
+
+    return expectedTotal > 0
+      ? Math.round((actualAttempts / expectedTotal) * 100)
+      : 0;
   };
 
   const calculateSpellingWeeklyAttemptPercentage = (weekData) => {
-    if (!weekData?.wordList?.length) return 0;
+    if (!weekData?.wordList?.length || !weekData?.days?.length) return 0;
 
     const totalWords = weekData.wordList.length;
+    setTotalWords(totalWords); // set for daily completed percentage
+    const expectedBase = totalWords * weekData.days.length;
 
-    const attemptedWords = weekData.wordList.filter((word) => {
-      return (
-        (word.correctAttempt || 0) > 0 ||
-        (word.incorrectAttempt || 0) > 0 ||
-        (word.history?.length || 0) > 0
-      );
-    }).length;
+    let actualAttempts = 0;
+    let totalIncorrectAttempts = 0;
 
-    return Math.round((attemptedWords / totalWords) * 100);
+    weekData.days.forEach((day) => {
+      day.words.forEach((word) => {
+        const correct = word.correctAttempt || 0;
+        const incorrect = word.incorrectAttempt || 0;
+        actualAttempts += correct + incorrect;
+        totalIncorrectAttempts += incorrect;
+      });
+    });
+
+    const expectedTotal = expectedBase + totalIncorrectAttempts;
+
+    return expectedTotal > 0
+      ? Math.round((actualAttempts / expectedTotal) * 100)
+      : 0;
   };
 
   // Pull spelling session
@@ -141,14 +165,14 @@ export default function HomePage() {
         {weeklySpellingSummary && dailySpellingStats && (
           <ProgressSection
             title="Spelling"
-            dailyAttemptPercentage={
-              dailySpellingStats.totalWords > 0
+            dailyAttemptPercentage={Math.round(
+              totalWords > 0
                 ? ((dailySpellingStats.correctWords +
                     dailySpellingStats.incorrectWords) /
-                    dailySpellingStats.totalWords) *
-                  100
+                    (totalWords + dailySpellingStats.incorrectWords)) *
+                    100
                 : 0
-            }
+            )}
             dailyAccuracy={dailySpellingStats.accuracy}
             weeklyAttemptPercentage={spellingAttemptedPercentage}
             weeklyAccuracy={weeklySpellingSummary.accuracy}
@@ -159,14 +183,14 @@ export default function HomePage() {
         {weeklyMathsSummary && dailyMathsStats && (
           <ProgressSection
             title="Maths"
-            dailyAttemptPercentage={
-              dailyMathsStats.totalQuestions > 0
+            dailyAttemptPercentage={Math.round(
+              totalQuestions > 0
                 ? ((dailyMathsStats.correctQuestions +
                     dailyMathsStats.incorrectQuestions) /
-                    dailyMathsStats.totalQuestions) *
-                  100
+                    (totalQuestions + dailyMathsStats.incorrectQuestions)) *
+                    100
                 : 0
-            }
+            )}
             dailyAccuracy={dailyMathsStats.accuracy}
             weeklyAttemptPercentage={mathsAttemptedPercentage}
             weeklyAccuracy={weeklyMathsSummary.accuracy}

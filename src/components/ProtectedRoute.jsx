@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
 import isTokenExpired from "../utils/authUtils";
+import DoggyLoader from "./loader/DoggySleeping.jsx";
 
 export default function ProtectedRoute({ children }) {
   const navigate = useNavigate();

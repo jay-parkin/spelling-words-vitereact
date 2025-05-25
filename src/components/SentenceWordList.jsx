@@ -46,8 +46,6 @@ export default function WeeklyWordList() {
         const data = await response.json();
 
         setWordList(data.words || []);
-
-        setLoading(false);
       } catch (err) {
         console.error("Failed to fetch classroom:", err);
         setLoadError("Network or server error.");

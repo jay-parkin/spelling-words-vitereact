@@ -2,10 +2,15 @@ import React, { useEffect, useState } from "react";
 
 const DadJokes = () => {
   const [jokes, setJokes] = useState([]);
-  const [error, setError] = useState(null);
+
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
 
   useEffect(() => {
     const fetchJokes = async () => {
+      setLoading(true);
+      setLoadError(null);
+
       const apiUrl = "https://api.api-ninjas.com/v1/dadjokes?";
 
       // console.log("API Key:", {import.meta.env.VITE_DAD_JOKES_API});
@@ -21,24 +26,34 @@ const DadJokes = () => {
         if (!response.ok) {
           const errorResponse = await response.json();
           console.error("API Error:", errorResponse);
-          setError(`Error: ${response.status} - ${response.statusText}`);
+
+          setLoadError(`Couldn't find Dad anywhere, try again later.`);
+          setLoading(false);
           return;
         }
 
         const data = await response.json();
         setJokes(data);
       } catch (err) {
-        setError(`Fetch failed: ${err.message}`);
+        setLoadError(`Couldn't find Dad anywhere, try again later.`);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchJokes();
   }, []);
 
+  if (loading) {
+    return <h3 className="api-dad-jokes">Finding Dad...</h3>;
+  }
+
+  if (loadError) return <h3 className="api-dad-jokes">{loadError}</h3>;
+
   return (
     <>
-      {error ? (
-        <p className="api-dad-jokes">{error}</p>
+      {loadError ? (
+        <p className="api-dad-jokes">{loadError}</p>
       ) : (
         jokes.map((joke, index) => (
           <h3 key={index} className="api-dad-jokes">

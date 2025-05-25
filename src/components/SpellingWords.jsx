@@ -160,7 +160,6 @@ export default function SpellingWords() {
         <h2>📚 Uh-oh!</h2>
         <DoggyLoader />
         <p>{loadError}</p>
-        <p>Please ask your teacher to assign you to a classroom.</p>
       </div>
     );
   }

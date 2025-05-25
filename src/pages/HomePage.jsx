@@ -5,6 +5,8 @@ import { getWeekNumber } from "../utils/TimeUtils";
 import DadJokes from "../components/DadJokes";
 import ProgressSection from "../components/ProgressSection";
 
+import DoggyLoader from "../components/loader/DoggySleeping.jsx";
+
 export default function HomePage() {
   const today = new Date().getDay();
   const week = getWeekNumber(new Date());
@@ -20,6 +22,9 @@ export default function HomePage() {
   const [dailyMathsStats, setDailyMathsStats] = useState(null);
   const [mathsAttemptedPercentage, setMathsAttemptedPercentage] = useState(0);
   const [totalQuestions, setTotalQuestions] = useState(0);
+
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
 
   const calculateMathsWeeklyAttemptPercentage = (weekData) => {
     if (!weekData?.questionList?.length || !weekData?.days?.length) return 0;
@@ -78,6 +83,9 @@ export default function HomePage() {
     if (!user?.userId) return;
 
     const fetchSpellingProgress = async () => {
+      setLoading(true);
+      setLoadError(null);
+
       try {
         const response = await fetch(
           `${import.meta.env.VITE_DATABASE_URL}/spelling/user-progress/${
@@ -89,7 +97,14 @@ export default function HomePage() {
             },
           }
         );
-        if (!response.ok) throw new Error("Failed to fetch user progress");
+
+        if (!response.ok) {
+          setLoadError("Failed to fetch user progress");
+
+          setLoading(false);
+          return;
+        }
+
         const data = await response.json();
 
         const weekData = data.session.weeks.find((w) => w.weekNumber === week);
@@ -106,6 +121,8 @@ export default function HomePage() {
         );
       } catch (err) {
         console.error("Error loading spelling progress:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -117,6 +134,8 @@ export default function HomePage() {
     if (!user?.userId) return;
 
     const fetchMathsProgress = async () => {
+      setLoading(true);
+      setLoadError(null);
       try {
         const response = await fetch(
           `${import.meta.env.VITE_DATABASE_URL}/maths/user-progress/${
@@ -128,7 +147,13 @@ export default function HomePage() {
             },
           }
         );
-        if (!response.ok) throw new Error("Failed to fetch user progress");
+        if (!response.ok) {
+          setLoadError("Failed to fetch user progress");
+
+          setLoading(false);
+          return;
+        }
+
         const data = await response.json();
 
         const weekData = data.session.weeks.find((w) => w.weekNumber === week);
@@ -146,11 +171,32 @@ export default function HomePage() {
         );
       } catch (err) {
         console.error("Error loading maths progress:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchMathsProgress();
   }, [user, week, today]);
+
+  if (loading) {
+    return (
+      <div className="loader-wrapper">
+        <h2>Zzz...</h2>
+        <DoggyLoader />
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="error-container">
+        <h2>📚 Uh-oh!</h2>
+        <DoggyLoader />
+        <p>{loadError}</p>
+      </div>
+    );
+  }
 
   return (
     <>

@@ -40,7 +40,6 @@ export default function WeeklyWordList() {
           } else {
             setLoadError("Failed to initialize sentences session.");
           }
-          setLoading(false);
           return;
         }
 
@@ -52,6 +51,8 @@ export default function WeeklyWordList() {
       } catch (err) {
         console.error("Failed to fetch classroom:", err);
         setLoadError("Network or server error.");
+      } finally {
+        setLoading(false);
       }
     };
 

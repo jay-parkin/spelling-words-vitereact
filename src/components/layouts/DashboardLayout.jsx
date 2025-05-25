@@ -1,4 +1,3 @@
-import "./DashboardLayout.css";
 import DashboardNavbar from "./DashboardNavbar.jsx";
 import Navbar from "../Navbar.jsx";
 
@@ -27,6 +26,7 @@ export default function DashboardLayout() {
           items = [
             { id: 1, name: "Spelling", path: "/spelling" },
             { id: 2, name: "Maths", path: "/maths" },
+            { id: 3, name: "Sentences", path: "/sentences" },
           ];
           break;
         default:

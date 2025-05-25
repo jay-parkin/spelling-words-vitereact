@@ -173,9 +173,9 @@ export default function HomePage() {
                     100
                 : 0
             )}
-            dailyAccuracy={dailySpellingStats.accuracy}
-            weeklyAttemptPercentage={spellingAttemptedPercentage}
-            weeklyAccuracy={weeklySpellingSummary.accuracy}
+            dailyAccuracy={Math.round(dailySpellingStats.accuracy)}
+            weeklyAttemptPercentage={Math.round(spellingAttemptedPercentage)}
+            weeklyAccuracy={Math.round(weeklySpellingSummary.accuracy)}
             weeklySummary={weeklySpellingSummary}
           />
         )}
@@ -191,9 +191,9 @@ export default function HomePage() {
                     100
                 : 0
             )}
-            dailyAccuracy={dailyMathsStats.accuracy}
-            weeklyAttemptPercentage={mathsAttemptedPercentage}
-            weeklyAccuracy={weeklyMathsSummary.accuracy}
+            dailyAccuracy={Math.round(dailyMathsStats.accuracy)}
+            weeklyAttemptPercentage={Math.round(mathsAttemptedPercentage)}
+            weeklyAccuracy={Math.round(weeklyMathsSummary.accuracy)}
             weeklySummary={weeklyMathsSummary}
           />
         )}

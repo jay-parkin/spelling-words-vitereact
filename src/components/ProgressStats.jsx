@@ -33,21 +33,6 @@ export default function ProgressStats(props) {
           <div className="stats-inner-container">
             <div className="stats-progress-container">
               <h5>Weekly Words Attempted</h5>
-              {/* <ProgressProvider
-                valueStart={0}
-                valueEnd={weeklyAttemptPercentage}
-              >
-                {(value) => (
-                  <CircularProgressbar
-                    value={value}
-                    text={`${value}%`}
-                    circleRatio={1}
-                    // counterClockwise={true}
-                    className="stats-circle-progress"
-                    ballStrokeWidth={20}
-                  />
-                )}
-              </ProgressProvider> */}
             </div>
 
             <div className="stats-progress-container">

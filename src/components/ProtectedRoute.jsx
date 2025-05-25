@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
-import  isTokenExpired  from "../utils/authUtils";
+import isTokenExpired from "../utils/authUtils";
 
 export default function ProtectedRoute({ children }) {
   const navigate = useNavigate();
@@ -60,11 +60,22 @@ export default function ProtectedRoute({ children }) {
   }, [token, navigate]);
 
   if (loading) {
-    return <div>Loading...</div>; // Show loading state while checking or fetching data
+    return (
+      <div className="loader-wrapper">
+        <h2>Zzz...</h2>
+        <DoggyLoader />
+      </div>
+    );
   }
 
   if (error) {
-    return <div>{error}</div>; // Show error if any
+    return (
+      <div className="error-container">
+        <h2>📚 Uh-oh!</h2>
+        <DoggyLoader />
+        <p>{error}</p>
+      </div>
+    );
   }
 
   if (!userLoaded) {

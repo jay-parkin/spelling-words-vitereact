@@ -1,4 +1,7 @@
+import WeeklyWordList from "../components/SentenceWordList";
 import randomColourProperty from "../utils/RandomColourProperty";
+
+import "../styles/SentencesPage.css";
 
 export default function SentencesPage() {
   return (
@@ -9,6 +12,7 @@ export default function SentencesPage() {
       >
         Sentences Page
       </h1>
+      <WeeklyWordList />
     </>
   );
 }

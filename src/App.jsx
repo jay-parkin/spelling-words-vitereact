@@ -1,4 +1,3 @@
-// App.jsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectedLayout from "./components/ProtectedLayout";
 import HomePage from "./pages/HomePage";

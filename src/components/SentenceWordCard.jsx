@@ -1,21 +1,35 @@
 import { useState } from "react";
 
-export default function SentenceWordCard({ word, definition, designColour }) {
-  const [localColourProperty] = useState(designColour);
+export default function SentenceWordCard({
+  word,
+  definition,
+  designColour,
+  onSelect,
+  isSelected,
+  onSentenceChange,
+  sentenceValue = "",
+}) {
+  const displayColour = isSelected ? designColour : "#ccc"; // Default color if not selected
+
+  const handleInputChange = (e) => {
+    onSentenceChange(word, e.target.value);
+  };
 
   return (
     <div
       className="sentence-word-card-container"
       style={{
-        boxShadow: `5px 5px 5px ${localColourProperty}`,
-        borderBottom: `1px solid ${localColourProperty}`,
-        borderLeft: `1px solid ${localColourProperty}`,
+        boxShadow: `5px 5px 5px ${displayColour}`,
+        borderBottom: `1px solid ${displayColour}`,
+        borderLeft: `1px solid ${displayColour}`,
+        cursor: "pointer",
       }}
+      onClick={() => onSelect(word)}
     >
       <div
         className="sentence-word-card-header"
         style={{
-          backgroundColor: localColourProperty,
+          backgroundColor: displayColour,
         }}
       >
         <h3>{word}</h3>
@@ -23,6 +37,21 @@ export default function SentenceWordCard({ word, definition, designColour }) {
       <div className="sentence-word-card-body">
         <div className="sentence-word-card-text">
           <p>{definition}</p>
+        </div>
+        <div className="sentence-word-card-input">
+          <textarea
+            className="sentence-textarea"
+            autoComplete="off"
+            type="text"
+            placeholder="Write your sentence..."
+            value={sentenceValue}
+            onClick={(e) => e.stopPropagation()}
+            onChange={handleInputChange}
+            disabled={!isSelected}
+            style={{
+              border: `1px solid ${displayColour}`,
+            }}
+          />
         </div>
       </div>
     </div>

@@ -19,6 +19,7 @@ export default function SpellingWords() {
 
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
+  const [initSuccess, setInitSuccess] = useState(false);
 
   // Initialize spelling session
   useEffect(() => {
@@ -145,6 +146,48 @@ export default function SpellingWords() {
     setLocalCurrentWordIndex(weeklyWordList.length);
   };
 
+  const allCorrect =
+    wordStatuses.length > 0 && wordStatuses.every((w) => w.isCorrect);
+
+  // INIT sentence session once all spelling words are correct
+  useEffect(() => {
+    if (!allCorrect || initSuccess || !user?.userId) return;
+
+    const initSentenceSession = async () => {
+      try {
+        const selectedWords = weeklyWordList.filter(
+          (w, i) => wordStatuses[i]?.isCorrect
+        );
+
+        const url = `${import.meta.env.VITE_DATABASE_URL}/sentences/init`;
+        const res = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          },
+          body: JSON.stringify({
+            userId: user.userId,
+            weekNumber: week,
+            day: today,
+            selectedWords,
+          }),
+        });
+
+        if (res.ok) {
+          setInitSuccess(true);
+          console.log("✅ Sentence session initialized.");
+        } else {
+          console.warn("Sentence session init failed.");
+        }
+      } catch (err) {
+        console.error("Sentence session init error:", err);
+      }
+    };
+
+    initSentenceSession();
+  }, [allCorrect, initSuccess, user?.userId]);
+
   if (loading) {
     return (
       <div className="loader-wrapper">
@@ -163,10 +206,6 @@ export default function SpellingWords() {
       </div>
     );
   }
-
-  // Check if session is complete
-  const allCorrect =
-    wordStatuses.length > 0 && wordStatuses.every((w) => w.isCorrect);
 
   if (allCorrect) {
     return (

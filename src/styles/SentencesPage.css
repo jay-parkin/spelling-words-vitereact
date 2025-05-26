@@ -12,6 +12,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: flex-start;
   margin-left: 10px;
   margin-right: 10px;
 }
@@ -80,4 +81,25 @@
 
 .toggle-btn:hover {
   background-color: #187bcd;
+}
+
+.sentence-textarea {
+  margin-top: 10px;
+  width: 100%;
+  max-width: 320px;
+  min-height: 80px;
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+  color: black;
+  font-size: 1rem;
+  resize: vertical;
+}
+
+.sentence-textarea:disabled {
+  background-color: #f0f0f0;
+  color: #888;
+  cursor: not-allowed;
+  resize: none;
 }

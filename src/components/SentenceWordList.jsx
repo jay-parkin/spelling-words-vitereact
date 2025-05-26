@@ -18,6 +18,24 @@ export default function WeeklyWordList() {
   const [loading, setLoading] = useState(true);
 
   const [visible, setVisible] = useState(true);
+  const [coloursMap, setColoursMap] = useState({});
+  const [selectedWords, setSelectedWords] = useState(() => {
+    const stored = localStorage.getItem("selectedWords");
+    return stored ? JSON.parse(stored) : [];
+  });
+  const [sentenceInputs, setSentenceInputs] = useState(() => {
+    const stored = localStorage.getItem("sentenceInputs");
+    return stored ? JSON.parse(stored) : {};
+  });
+
+  useEffect(() => {
+    localStorage.setItem("sentenceInputs", JSON.stringify(sentenceInputs));
+  }, [sentenceInputs]);
+
+  // Save to localStorage on change
+  useEffect(() => {
+    localStorage.setItem("selectedWords", JSON.stringify(selectedWords));
+  }, [selectedWords]);
 
   // Fetch the attempted word list for the current week
   useEffect(() => {
@@ -45,7 +63,13 @@ export default function WeeklyWordList() {
 
         const data = await response.json();
 
-        setWordList(data.words || []);
+        const words = data.words || [];
+        setWordList(words);
+
+        // assign each word a color
+        const newColours = {};
+        words.forEach((w) => (newColours[w.word] = randomColourProperty()));
+        setColoursMap(newColours);
       } catch (err) {
         console.error("Failed to fetch classroom:", err);
         setLoadError("Network or server error.");
@@ -66,6 +90,86 @@ export default function WeeklyWordList() {
     );
   }
 
+  const handleSelect = (word) => {
+    if (selectedWords.includes(word)) {
+      setSelectedWords(selectedWords.filter((w) => w !== word));
+    } else if (selectedWords.length < 3) {
+      setSelectedWords([...selectedWords, word]);
+    }
+  };
+
+  const handleSentenceChange = (word, sentence) => {
+    setSentenceInputs((prev) => ({
+      ...prev,
+      [word]: sentence,
+    }));
+  };
+
+  const submitSentences = async () => {
+    const selectedWordObjects = wordList.filter((w) =>
+      selectedWords.includes(w.word)
+    );
+
+    if (selectedWordObjects.length !== 3) {
+      alert("Please select exactly 3 words before submitting.");
+      return;
+    }
+
+    const missing = selectedWordObjects.find(
+      (w) => !sentenceInputs[w.word]?.trim()
+    );
+    if (missing) {
+      alert(`Please enter a sentence for: ${missing.word}`);
+      return;
+    }
+
+    try {
+      for (let wordObj of selectedWordObjects) {
+        const payload = {
+          userId: user.userId,
+          weekNumber,
+          day: today,
+          word: wordObj.word,
+          sentence: sentenceInputs[wordObj.word],
+          isValid: true,
+        };
+
+        console.log("➡️ Sending payload to /sentences/attempt:", payload);
+
+        const response = await fetch(
+          `${import.meta.env.VITE_DATABASE_URL}/sentences/attempt`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+            },
+            body: JSON.stringify(payload),
+          }
+        );
+
+        const resBody = await response.json();
+        console.log("⬅️ Received response for", wordObj.word, ":", resBody);
+
+        if (!response.ok) {
+          console.error(
+            "❌ Error submitting",
+            wordObj.word,
+            response.status,
+            resBody
+          );
+          alert(`Error submitting sentence for "${wordObj.word}"`);
+          return;
+        }
+      }
+
+      alert("Sentences submitted successfully!");
+    } catch (err) {
+      console.error("❗ Submission error:", err);
+      alert("There was a problem submitting your sentences.");
+    }
+  };
+
   if (wordList.length === 0)
     return (
       <div className="error-container">
@@ -82,8 +186,8 @@ export default function WeeklyWordList() {
         <h2 className="list-heading">
           This Week’s Word List (Week {weekNumber})
         </h2>
-        <button className="toggle-btn" onClick={() => setVisible(!visible)}>
-          {visible ? "Hide" : "Show"} Words
+        <button className="toggle-btn" onClick={submitSentences}>
+          Submit Sentences
         </button>
       </div>
 
@@ -94,7 +198,11 @@ export default function WeeklyWordList() {
               key={index}
               word={wordObj.word}
               definition={wordObj.definition}
-              designColour={randomColourProperty()}
+              designColour={coloursMap[wordObj.word]}
+              isSelected={selectedWords.includes(wordObj.word)}
+              onSelect={handleSelect}
+              onSentenceChange={handleSentenceChange}
+              sentenceValue={sentenceInputs[wordObj.word] || ""}
             />
           ))}
         </div>

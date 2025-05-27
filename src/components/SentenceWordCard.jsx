@@ -8,6 +8,7 @@ export default function SentenceWordCard({
   isSelected,
   onSentenceChange,
   sentenceValue = "",
+  isLocked = false,
 }) {
   const displayColour = isSelected ? designColour : "#ccc"; // Default color if not selected
 
@@ -17,14 +18,16 @@ export default function SentenceWordCard({
 
   return (
     <div
-      className="sentence-word-card-container"
+      className={`sentence-word-card-container ${
+        isSelected ? "selected" : ""
+      } ${isLocked ? "locked" : ""}`}
       style={{
         boxShadow: `5px 5px 5px ${displayColour}`,
         borderBottom: `1px solid ${displayColour}`,
         borderLeft: `1px solid ${displayColour}`,
         cursor: "pointer",
       }}
-      onClick={() => onSelect(word)}
+      onClick={() => !isLocked && onSelect(word)}
     >
       <div
         className="sentence-word-card-header"
@@ -47,7 +50,7 @@ export default function SentenceWordCard({
             value={sentenceValue}
             onClick={(e) => e.stopPropagation()}
             onChange={handleInputChange}
-            disabled={!isSelected}
+            disabled={isLocked}
             style={{
               border: `1px solid ${displayColour}`,
             }}

@@ -28,6 +28,33 @@ export default function WeeklyWordList() {
     return stored ? JSON.parse(stored) : {};
   });
 
+  const [lockedWords, setLockedWords] = useState(() => {
+    const stored = localStorage.getItem("lockedWords");
+    return stored ? JSON.parse(stored) : [];
+  });
+
+  const [submissionSuccess, setSubmissionSuccess] = useState(false);
+
+  useEffect(() => {
+    const today = new Date().toDateString();
+    const lastUsed = localStorage.getItem("lastUsedDate");
+
+    if (lastUsed !== today) {
+      localStorage.removeItem("sentenceInputs");
+      localStorage.removeItem("selectedWords");
+      localStorage.removeItem("lockedWords");
+      localStorage.setItem("lastUsedDate", today);
+
+      setSentenceInputs({});
+      setSelectedWords([]);
+      setLockedWords([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("lockedWords", JSON.stringify(lockedWords));
+  }, [lockedWords]);
+
   useEffect(() => {
     localStorage.setItem("sentenceInputs", JSON.stringify(sentenceInputs));
   }, [sentenceInputs]);
@@ -164,6 +191,9 @@ export default function WeeklyWordList() {
       }
 
       alert("Sentences submitted successfully!");
+
+      setLockedWords((prev) => [...prev, ...selectedWords]);
+      setSubmissionSuccess(true);
     } catch (err) {
       console.error("❗ Submission error:", err);
       alert("There was a problem submitting your sentences.");
@@ -186,8 +216,12 @@ export default function WeeklyWordList() {
         <h2 className="list-heading">
           This Week’s Word List (Week {weekNumber})
         </h2>
-        <button className="toggle-btn" onClick={submitSentences}>
-          Submit Sentences
+        <button
+          className={`toggle-btn ${submissionSuccess ? "success" : ""}`}
+          onClick={submitSentences}
+          disabled={submissionSuccess}
+        >
+          {submissionSuccess ? "Submit Success" : "Submit Sentences"}
         </button>
       </div>
 
@@ -203,6 +237,7 @@ export default function WeeklyWordList() {
               onSelect={handleSelect}
               onSentenceChange={handleSentenceChange}
               sentenceValue={sentenceInputs[wordObj.word] || ""}
+              isLocked={lockedWords.includes(wordObj.word)}
             />
           ))}
         </div>

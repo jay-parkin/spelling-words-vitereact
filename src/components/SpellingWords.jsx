@@ -155,23 +155,36 @@ export default function SpellingWords() {
 
     const initSentenceSession = async () => {
       try {
-        const selectedWords = weeklyWordList.filter(
-          (w, i) => wordStatuses[i]?.isCorrect
-        );
+        const selectedWords = weeklyWordList
+          .filter((w, i) => wordStatuses[i]?.isCorrect)
+          .map((w) => ({
+            word: w.word,
+            definition: w.definition,
+          }));
+
+        const wordCount = selectedWords.length;
+
+        console.log("Selected words for sentence session:", selectedWords);
 
         const url = `${import.meta.env.VITE_DATABASE_URL}/sentences/init`;
+        const body = JSON.stringify({
+          userId: user.userId,
+          weekNumber: week,
+          day: today,
+          selectedWords,
+          wordCount,
+          // isValid: true,
+        });
+
+        console.log("➡️ Sending init request to /sentences/init:", body);
+
         const res = await fetch(url, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("jwt")}`,
           },
-          body: JSON.stringify({
-            userId: user.userId,
-            weekNumber: week,
-            day: today,
-            selectedWords,
-          }),
+          body: body,
         });
 
         if (res.ok) {

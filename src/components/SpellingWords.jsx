@@ -7,6 +7,7 @@ import { getWeekNumber } from "../utils/TimeUtils.js";
 import { useUser } from "../contexts/UserContext";
 
 import DoggyLoader from "./loader/DoggySleeping.jsx";
+import { triggerConfetti } from "../utils/confettiTrigger";
 
 export default function SpellingWords() {
   const today = new Date().getDay();
@@ -17,56 +18,85 @@ export default function SpellingWords() {
   const [wordStatuses, setWordStatuses] = useState([]);
   const [localCurrentWordIndex, setLocalCurrentWordIndex] = useState(0);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState(null);
   const [initSuccess, setInitSuccess] = useState(false);
 
-  // Initialize spelling session
+  const [sessionInitialized, setSessionInitialized] = useState(false);
+
+  // Auto-check if session already exists
   useEffect(() => {
-    if (!user?.userId) return;
+    const checkExistingSession = async () => {
+      if (!user?.userId) return;
 
-    const initSession = async () => {
       setLoading(true);
-      setLoadError(null);
-
       try {
-        const url = `${import.meta.env.VITE_DATABASE_URL}/spelling/init`;
+        const url = `${
+          import.meta.env.VITE_DATABASE_URL
+        }/spelling/user-progress/${user.userId}`;
         const response = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userId: user?.userId,
-            weekNumber: week,
-          }),
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          },
         });
 
         if (!response.ok) {
-          if (response.status === 403 || response.status === 404) {
-            setLoadError("You're not assigned to a classroom yet.");
-          } else {
-            setLoadError("Failed to initialize spelling session.");
-          }
+          setSessionInitialized(false);
           setLoading(false);
           return;
         }
 
         const data = await response.json();
-        const wordList =
-          data.session.weeks.find((w) => w.weekNumber === week)?.wordList || [];
+        const existingWeek = data.session.weeks.find(
+          (w) => w.weekNumber === week
+        );
 
-        setWordList(wordList);
-      } catch (error) {
-        console.error("Init error:", error);
-        setLoadError("Network or server error.");
+        if (existingWeek) {
+          setWordList(existingWeek.wordList);
+          setSessionInitialized(true);
+        }
+      } catch (err) {
+        console.warn("Session check failed:", err.message);
+      } finally {
+        setLoading(false);
       }
     };
 
-    initSession();
+    checkExistingSession();
   }, [user, week]);
+
+  // Initialize spelling session
+  const initSession = async () => {
+    setLoading(true);
+    setLoadError(null);
+
+    try {
+      const url = `${import.meta.env.VITE_DATABASE_URL}/spelling/init`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user?.userId, weekNumber: week }),
+      });
+
+      if (!response.ok) throw new Error("Failed to initialize session");
+
+      const data = await response.json();
+      const wordList =
+        data.session.weeks.find((w) => w.weekNumber === week)?.wordList || [];
+
+      setWordList(wordList);
+      setSessionInitialized(true);
+    } catch (error) {
+      setLoadError("Error loading session.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Fetch daily word statuses from backend
   useEffect(() => {
-    if (weeklyWordList.length === 0 || !user?.userId) return;
+    if (!sessionInitialized || weeklyWordList.length === 0 || !user?.userId)
+      return;
 
     const fetchWordStatus = async () => {
       try {
@@ -95,7 +125,7 @@ export default function SpellingWords() {
     };
 
     fetchWordStatus();
-  }, [user?.userId, weeklyWordList]);
+  }, [sessionInitialized, weeklyWordList, user?.userId]);
 
   // Attempt handler (send to backend + update status)
   const handleAttempt = async (userInput) => {
@@ -148,6 +178,12 @@ export default function SpellingWords() {
 
   const allCorrect =
     wordStatuses.length > 0 && wordStatuses.every((w) => w.isCorrect);
+
+  useEffect(() => {
+    if (allCorrect) {
+      triggerConfetti(); 
+    }
+  }, [allCorrect]);
 
   // INIT sentence session once all spelling words are correct
   useEffect(() => {
@@ -229,6 +265,9 @@ export default function SpellingWords() {
       />
     );
   }
+
+  if (!sessionInitialized)
+    return <button onClick={initSession}>Request Spelling Words</button>;
 
   return (
     <section className="spelling-body">

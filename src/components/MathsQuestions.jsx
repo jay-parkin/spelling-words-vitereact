@@ -6,6 +6,7 @@ import MathsCard from "./MathsCard";
 import MathsResults from "./MathsResults";
 
 import DoggyLoader from "./loader/DoggySleeping";
+import { triggerConfetti } from "../utils/confettiTrigger";
 
 const QUESTIONS_PER_PAGE = 6;
 
@@ -17,63 +18,89 @@ export default function MathsQuestions() {
   const [weeklyMathsList, setMathsList] = useState([]);
   const [mathsStatuses, setMathsStatuses] = useState([]);
   const [localCurrentMathsIndex, setLocalCurrentMathsIndex] = useState(0);
-  const [finished, setFinished] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [displayedQuestions, setDisplayedQuestions] = useState([]);
-
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
+  const [sessionInitialized, setSessionInitialized] = useState(false);
 
-  // Initialize maths session
+  const [finished, setFinished] = useState(false);
   useEffect(() => {
-    if (!user?.userId) return;
+    if (finished) {
+      triggerConfetti();
+    }
+  }, [finished]);
 
-    const initSession = async () => {
+  // Check if a session already exists
+  useEffect(() => {
+    const checkExistingSession = async () => {
+      if (!user?.userId) return;
+
       setLoading(true);
-      setLoadError(null);
-
       try {
-        const url = `${import.meta.env.VITE_DATABASE_URL}/maths/init`;
+        const url = `${import.meta.env.VITE_DATABASE_URL}/maths/user-progress/${
+          user.userId
+        }`;
         const response = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userId: user?.userId,
-            weekNumber: 21,
-          }),
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          },
         });
 
         if (!response.ok) {
-          if (response.status === 403 || response.status === 404) {
-            setLoadError("You're not assigned to a classroom yet.");
-          } else {
-            setLoadError("Failed to initialize maths session.");
-          }
+          setSessionInitialized(false);
           setLoading(false);
           return;
         }
 
         const data = await response.json();
-        const questionsList =
-          data.session.weeks.find((w) => w.weekNumber === week)?.questionList ||
-          [];
+        const existingWeek = data.session.weeks.find(
+          (w) => w.weekNumber === week
+        );
 
-        setMathsList(questionsList);
-        setQuestions(questionsList);
-        setDisplayedQuestions(questionsList.slice(0, QUESTIONS_PER_PAGE));
-        if (questionsList.length === 0) setFinished(true);
-      } catch (error) {
-        console.error("Init error:", error);
-        setLoadError("Network or server error.");
+        if (existingWeek) {
+          setMathsList(existingWeek.questionList);
+          setSessionInitialized(true);
+        }
+      } catch (err) {
+        console.warn("Session check failed:", err.message);
+      } finally {
+        setLoading(false);
       }
     };
 
-    initSession();
+    checkExistingSession();
   }, [user, week]);
+
+  // Initialize maths session
+  const initSession = async () => {
+    setLoading(true);
+    try {
+      const url = `${import.meta.env.VITE_DATABASE_URL}/maths/init`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user?.userId, weekNumber: week }),
+      });
+      const data = await response.json();
+      const questionsList =
+        data.session.weeks.find((w) => w.weekNumber === week)?.questionList ||
+        [];
+      setMathsList(questionsList);
+      setQuestions(questionsList);
+      setDisplayedQuestions(questionsList.slice(0, QUESTIONS_PER_PAGE));
+      setSessionInitialized(true);
+    } catch {
+      setLoadError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Fetch daily maths questions statuses from backend
   useEffect(() => {
-    if (weeklyMathsList.length === 0 || !user?.userId) return;
+    if (!sessionInitialized || weeklyMathsList.length === 0 || !user?.userId)
+      return;
 
     const fetchMathsStatus = async () => {
       try {
@@ -103,7 +130,7 @@ export default function MathsQuestions() {
     };
 
     fetchMathsStatus();
-  }, [user?.userId, weeklyMathsList]);
+  }, [sessionInitialized, weeklyMathsList, user?.userId]);
 
   // Function to handle attempts
   // This function is called when the user attempts to answer a question
@@ -172,6 +199,9 @@ export default function MathsQuestions() {
       <MathsResults userId={user?.userId} weekNumber={week} dayNumber={today} />
     );
   }
+
+  if (!sessionInitialized)
+    return <button onClick={initSession}>Request Maths Questions</button>;
 
   return (
     <section className="maths-body">

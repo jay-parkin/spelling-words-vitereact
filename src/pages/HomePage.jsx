@@ -4,6 +4,7 @@ import { useUser } from "../contexts/UserContext";
 import { getWeekNumber } from "../utils/TimeUtils";
 import DadJokes from "../components/DadJokes";
 import ProgressSection from "../components/ProgressSection";
+import MissingProgressLoader from "../components/missingprogressloader/MissingProgressLoader.jsx";
 
 import DoggyLoader from "../components/loader/DoggySleeping.jsx";
 
@@ -24,18 +25,14 @@ export default function HomePage() {
   const [totalQuestions, setTotalQuestions] = useState(0);
 
   const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState(null);
 
   const calculateMathsWeeklyAttemptPercentage = (weekData) => {
     if (!weekData?.questionList?.length || !weekData?.days?.length) return 0;
-
     const totalQuestions = weekData.questionList.length;
-    setTotalQuestions(totalQuestions); // set for daily completed percentage
+    setTotalQuestions(totalQuestions);
     const expectedBase = totalQuestions * weekData.days.length;
-
     let actualAttempts = 0;
     let totalIncorrectAttempts = 0;
-
     weekData.days.forEach((day) => {
       day.questions.forEach((q) => {
         const correct = q.correctAttempt || 0;
@@ -44,9 +41,7 @@ export default function HomePage() {
         totalIncorrectAttempts += incorrect;
       });
     });
-
     const expectedTotal = expectedBase + totalIncorrectAttempts;
-
     return expectedTotal > 0
       ? Math.round((actualAttempts / expectedTotal) * 100)
       : 0;
@@ -54,14 +49,11 @@ export default function HomePage() {
 
   const calculateSpellingWeeklyAttemptPercentage = (weekData) => {
     if (!weekData?.wordList?.length || !weekData?.days?.length) return 0;
-
     const totalWords = weekData.wordList.length;
-    setTotalWords(totalWords); // set for daily completed percentage
+    setTotalWords(totalWords);
     const expectedBase = totalWords * weekData.days.length;
-
     let actualAttempts = 0;
     let totalIncorrectAttempts = 0;
-
     weekData.days.forEach((day) => {
       day.words.forEach((word) => {
         const correct = word.correctAttempt || 0;
@@ -70,113 +62,89 @@ export default function HomePage() {
         totalIncorrectAttempts += incorrect;
       });
     });
-
     const expectedTotal = expectedBase + totalIncorrectAttempts;
-
     return expectedTotal > 0
       ? Math.round((actualAttempts / expectedTotal) * 100)
       : 0;
   };
 
-  // Pull spelling session
   useEffect(() => {
     if (!user?.userId) return;
+    setLoading(true);
 
-    const fetchSpellingProgress = async () => {
-      setLoading(true);
-      setLoadError(null);
-
+    const fetchBothProgress = async () => {
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_DATABASE_URL}/spelling/user-progress/${
-            user.userId
-          }`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-            },
+        // Fetch spelling session
+        try {
+          const res = await fetch(
+            `${import.meta.env.VITE_DATABASE_URL}/spelling/user-progress/${
+              user.userId
+            }`,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+              },
+            }
+          );
+          if (res.ok) {
+            const data = await res.json();
+            const weekData = data.session.weeks.find(
+              (w) => w.weekNumber === week
+            );
+            if (weekData) {
+              setWeeklySpellingSummary(weekData.weeklySummary);
+              const todayData = weekData.days?.[today];
+              if (todayData?.dailySummary) {
+                setDailySpellingStats(todayData.dailySummary);
+              }
+              setSpellingAttemptedPercentage(
+                calculateSpellingWeeklyAttemptPercentage(weekData)
+              );
+            }
           }
-        );
-
-        if (!response.ok) {
-          setLoadError("Failed to fetch user progress");
-
-          setLoading(false);
-          return;
+        } catch (err) {
+          console.warn("No spelling session");
         }
 
-        const data = await response.json();
-
-        const weekData = data.session.weeks.find((w) => w.weekNumber === week);
-        if (!weekData) return;
-
-        setWeeklySpellingSummary(weekData.weeklySummary);
-        const todayData = weekData.days?.[today];
-        if (todayData?.dailySummary) {
-          setDailySpellingStats(todayData.dailySummary);
+        // Fetch maths session
+        try {
+          const res = await fetch(
+            `${import.meta.env.VITE_DATABASE_URL}/maths/user-progress/${
+              user.userId
+            }`,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+              },
+            }
+          );
+          if (res.ok) {
+            const data = await res.json();
+            const weekData = data.session.weeks.find(
+              (w) => w.weekNumber === week
+            );
+            if (weekData) {
+              setWeeklyMathsSummary(weekData.weeklySummary);
+              const todayData = weekData.days?.[today];
+              if (todayData?.dailySummary) {
+                setDailyMathsStats(todayData.dailySummary);
+              }
+              setMathsAttemptedPercentage(
+                calculateMathsWeeklyAttemptPercentage(weekData)
+              );
+            }
+          }
+        } catch (err) {
+          console.warn("No maths session");
         }
-
-        setSpellingAttemptedPercentage(
-          calculateSpellingWeeklyAttemptPercentage(weekData)
-        );
       } catch (err) {
-        console.error("Error loading spelling progress:", err);
+        console.error("Unexpected error loading progress:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchSpellingProgress();
-  }, [user, week, today]);
-
-  // Pull maths session
-  useEffect(() => {
-    if (!user?.userId) return;
-
-    const fetchMathsProgress = async () => {
-      setLoading(true);
-      setLoadError(null);
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_DATABASE_URL}/maths/user-progress/${
-            user.userId
-          }`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-            },
-          }
-        );
-        if (!response.ok) {
-          setLoadError("Failed to fetch user progress");
-
-          setLoading(false);
-          return;
-        }
-
-        const data = await response.json();
-
-        const weekData = data.session.weeks.find((w) => w.weekNumber === week);
-        if (!weekData) return;
-
-        setWeeklyMathsSummary(weekData.weeklySummary);
-        const todayData = weekData.days?.[today];
-
-        if (todayData?.dailySummary) {
-          setDailyMathsStats(todayData.dailySummary);
-        }
-
-        setMathsAttemptedPercentage(
-          calculateMathsWeeklyAttemptPercentage(weekData)
-        );
-      } catch (err) {
-        console.error("Error loading maths progress:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMathsProgress();
+    fetchBothProgress();
   }, [user, week, today]);
 
   if (loading) {
@@ -188,12 +156,10 @@ export default function HomePage() {
     );
   }
 
-  if (loadError) {
+  if (!weeklySpellingSummary && !weeklyMathsSummary) {
     return (
-      <div className="error-container">
-        <h2>📚 Uh-oh!</h2>
-        <DoggyLoader />
-        <p>{loadError}</p>
+      <div className="home-container loader-wrapper">
+        <MissingProgressLoader />
       </div>
     );
   }

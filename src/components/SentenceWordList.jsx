@@ -4,6 +4,7 @@ import randomColourProperty from "../utils/RandomColourProperty.js";
 import { getWeekNumber } from "../utils/TimeUtils.js";
 
 import DoggyLoader from "./loader/DoggySleeping.jsx";
+import { triggerConfetti } from "../utils/confettiTrigger";
 
 import SentenceWordCard from "./SentenceWordCard.jsx";
 
@@ -34,6 +35,11 @@ export default function WeeklyWordList() {
   });
 
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
+  useEffect(() => {
+    if (submissionSuccess) {
+      triggerConfetti();
+    }
+  }, [submissionSuccess]);
 
   useEffect(() => {
     const today = new Date().toDateString();
@@ -189,8 +195,6 @@ export default function WeeklyWordList() {
           return;
         }
       }
-
-      alert("Sentences submitted successfully!");
 
       setLockedWords((prev) => [...prev, ...selectedWords]);
       setSubmissionSuccess(true);

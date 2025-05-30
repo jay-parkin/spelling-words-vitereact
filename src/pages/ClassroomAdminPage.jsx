@@ -4,6 +4,7 @@ import ProgressSection from "../components/ProgressSection";
 import DoggyLoader from "../components/loader/DoggySleeping";
 
 import "../styles/ClassroomAdminPage.css";
+import { getWeekNumber } from "../utils/TimeUtils";
 
 export default function ClassroomAdminPage() {
   const { user } = useUser();
@@ -23,44 +24,59 @@ export default function ClassroomAdminPage() {
         setClassroom(data.classroom);
 
         const statsPromises = data.classroom.students.map(async (student) => {
-          const spellingRes = await fetch(
-            `${import.meta.env.VITE_DATABASE_URL}/spelling/user-progress/${
-              student._id
-            }`,
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-              },
+          let spelling = {};
+          let maths = {};
+
+          try {
+            const spellingRes = await fetch(
+              `${import.meta.env.VITE_DATABASE_URL}/spelling/user-progress/${
+                student._id
+              }`,
+              {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+                },
+              }
+            );
+            if (spellingRes.ok) {
+              const spellingData = await spellingRes.json();
+              const currentWeek = getWeekNumber(new Date());
+              const spellingWeek = spellingData.session.weeks.find(
+                (w) => w.weekNumber === currentWeek
+              );
+              spelling = spellingWeek?.weeklySummary ?? {};
             }
-          );
-          const mathsRes = await fetch(
-            `${import.meta.env.VITE_DATABASE_URL}/maths/user-progress/${
-              student._id
-            }`,
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-              },
+          } catch (err) {
+            console.warn(`No spelling data for ${student.name}`);
+          }
+
+          try {
+            const mathsRes = await fetch(
+              `${import.meta.env.VITE_DATABASE_URL}/maths/user-progress/${
+                student._id
+              }`,
+              {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+                },
+              }
+            );
+            if (mathsRes.ok) {
+              const mathsData = await mathsRes.json();
+              const currentWeek = getWeekNumber(new Date());
+              const mathsWeek = mathsData.session.weeks.find(
+                (w) => w.weekNumber === currentWeek
+              );
+              maths = mathsWeek?.weeklySummary ?? {};
             }
-          );
-
-          const spellingData = await spellingRes.json();
-          const mathsData = await mathsRes.json();
-
-          const currentWeek = new Date();
-          const weekNumber = getWeekNumber(currentWeek);
-
-          const spellingWeek = spellingData.session.weeks.find(
-            (w) => w.weekNumber === weekNumber
-          );
-          const mathsWeek = mathsData.session.weeks.find(
-            (w) => w.weekNumber === weekNumber
-          );
+          } catch (err) {
+            console.warn(`No maths data for ${student.name}`);
+          }
 
           return {
             student,
-            spelling: spellingWeek?.weeklySummary ?? {},
-            maths: mathsWeek?.weeklySummary ?? {},
+            spelling,
+            maths,
           };
         });
 
@@ -75,12 +91,6 @@ export default function ClassroomAdminPage() {
 
     fetchClassroom();
   }, [user.userId]);
-
-  const getWeekNumber = (date) => {
-    const oneJan = new Date(date.getFullYear(), 0, 1);
-    const numberOfDays = Math.floor((date - oneJan) / (24 * 60 * 60 * 1000));
-    return Math.ceil((date.getDay() + 1 + numberOfDays) / 7);
-  };
 
   if (loading) {
     return (

@@ -72,6 +72,16 @@ export default function SpellingWords() {
 
     try {
       const url = `${import.meta.env.VITE_DATABASE_URL}/spelling/init`;
+      console.log("Init POST URL:", url);
+      console.log("User ID being sent:", user?.userId);
+
+      if (!user?.userId) {
+        console.warn("User ID is not set — aborting init.");
+        setLoadError("User not logged in");
+        setLoading(false);
+        return;
+      }
+
       const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -181,7 +191,7 @@ export default function SpellingWords() {
 
   useEffect(() => {
     if (allCorrect) {
-      triggerConfetti(); 
+      triggerConfetti();
     }
   }, [allCorrect]);
 

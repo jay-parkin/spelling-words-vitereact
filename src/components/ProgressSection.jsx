@@ -31,8 +31,8 @@ export default function ProgressSection({
           <ProgressProvider valueStart={0} valueEnd={weeklyAttemptPercentage}>
             {(value) => (
               <CircularProgressbar
-                value={value}
-                text={`${value.toFixed(0)}%`}
+                value={value || 0}
+                text={`${(value || 0).toFixed(0)}%`}
                 circleRatio={1}
                 className="stats-circle-progress"
               />
@@ -45,8 +45,8 @@ export default function ProgressSection({
           <ProgressProvider valueStart={0} valueEnd={weeklyAccuracy}>
             {(value) => (
               <CircularProgressbar
-                value={value}
-                text={`${value.toFixed(0)}%`}
+                value={value || 0}
+                text={`${(value || 0).toFixed(0)}%`}
                 circleRatio={1}
                 className="stats-circle-progress"
               />

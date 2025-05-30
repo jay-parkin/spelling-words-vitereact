@@ -19,7 +19,7 @@ export default function DashboardLayout() {
       // Define side items based on user role
       switch (role) {
         case "admin":
-          items = [{ id: 1, name: "Classroom", path: "/classroom" }];
+          items = [{ id: 1, name: "Classroom", path: "teacher/classroom" }];
           break;
 
         case "user":

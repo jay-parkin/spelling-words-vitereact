@@ -8,7 +8,7 @@ import WordSearchPage from "./pages/WordSearchPage";
 import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
 import AuthPage from "./pages/AuthPage";
-import ClassroomAdminPage from "./pages/ClassroomAdminPage";
+import ClassroomDashboardPage from "./pages/ClassroomDashboardPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -39,7 +39,10 @@ function App() {
             <Route path="word-search" element={<WordSearchPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="settings" element={<SettingsPage />} />
-            <Route path="teacher/classroom" element={<ClassroomAdminPage />} />
+            <Route
+              path="teacher/classroom"
+              element={<ClassroomDashboardPage />}
+            />
           </Route>
         </Route>
 

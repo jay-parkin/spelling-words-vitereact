@@ -126,7 +126,7 @@ export default function WeeklyWordList() {
   const handleSelect = (word) => {
     if (selectedWords.includes(word)) {
       setSelectedWords(selectedWords.filter((w) => w !== word));
-    } else if (selectedWords.length < 3) {
+    } else if (selectedWords.length < 5) {
       setSelectedWords([...selectedWords, word]);
     }
   };
@@ -143,8 +143,8 @@ export default function WeeklyWordList() {
       selectedWords.includes(w.word)
     );
 
-    if (selectedWordObjects.length !== 3) {
-      alert("Please select exactly 3 words before submitting.");
+    if (selectedWordObjects.length !== 5) {
+      alert("Please select exactly 5 words before submitting.");
       return;
     }
 

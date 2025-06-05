@@ -94,7 +94,7 @@ export default function WordCard(props) {
           backgroundColor: localColourProperty,
         }}
       >
-        <TextToSpeech text={definition} />
+        <TextToSpeech text={word} />
       </div>
       <div className="spelling-card-body">
         <div className="spelling-card-text">
